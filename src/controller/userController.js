@@ -15,6 +15,7 @@ const jwt = require('jsonwebtoken') ;
 
 const {getCartCount} = require('../utils/getCartCount') ;
 const {userValidator} = require('../utils/userValidation') ;
+const {addressValidator} = require('../utils/addressValidation') ;
 const {isLogged} = require('../utils/isLogged') ;
 const {getOrderCount} = require('../utils/getOrderCount') ;
 const {getWishlistCount} = require('../utils/getWishlistCount') ;
@@ -40,6 +41,8 @@ const getHome = async (req,res) => {
         const orderCount = await getOrderCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
         const wishlistProductCount = await getWishlistCount(req.cookies) ;
+
+        console.log(wishlistProductCount) ;
 
         const products = await Products
                                     .find({}) 
@@ -455,15 +458,20 @@ const login = async (req,res) => {
             } 
         }
 
-        const {emailId,password} = req.body ;
+        const {emailId,password,confirmPassword} = req.body ;
+        console.log(emailId)
         // checking with the entered emailId 
         const user = await Users.findOne({emailId}) ;
         if(!user) {
-            throw new Error ('invalid user Email ID') ;
+            throw new Error ('invalid credentials') ;
         }
 
         if(user.isVerified === false) {
             throw new Error('user is not verified!') ;
+        }
+
+        if(password !== confirmPassword){
+            throw new Error('passwords do not match')
         }
 
         // checking the entered password match to hashed password
@@ -479,11 +487,17 @@ const login = async (req,res) => {
         // sending the token to client through cookies
         res.cookie('token', jwtToken) ;
 
-        res.redirect('/') ;
+        res.json({
+            status : true
+        })
 
         
     } catch (err) {
-        console.log(err.message)
+        console.log(err.message) ;
+        res.json({
+            loginError : true ,
+            message : err.message
+        })
     }
 }
 
@@ -813,6 +827,12 @@ const placeOrder = async (req,res) => {
         const user = req.user ;
         const {payingMethod,country,state,address,city,postcode} = req.body ;
 
+        const {isValid,errors} = addressValidator(req.body) ;
+
+        if(!isValid){
+            throw new Error(errors) ;
+        }
+
         const cart = await Cart.findOne({ user:user._id}) ;
 
         let paymentMethod ;
@@ -881,7 +901,10 @@ const placeOrder = async (req,res) => {
 
             razorpay.orders.create( razorpayOrder , function (err,order) {
                 console.log(order) ;
-                res.json(order) ;
+                res.json({
+                    onlinePayment : true,
+                    order : order
+                }) ;
             })
 
            
@@ -889,6 +912,10 @@ const placeOrder = async (req,res) => {
 
        
     } catch (err) {
+        res.json({
+            addressError : true,
+            message : err.message
+        })
         console.log(err.message)
     }
    
@@ -902,19 +929,23 @@ const getOrders = async (req,res) => {
 
          const user = req.user ;
 
-         const order = await Orders
-                                .findOne({ userId : user._id })
+         const orders = await Orders
+                                .find({ userId : user._id })
                                 .populate('products')
     
-        if(!order) {
-            return res.json({
-                emptyOrder : true
-            })
+                       
+        if(orders.length === 0) {
+            throw new Error('order list is empty')
         }
-         res.render('user/orderDetails',{ order , user , cartProductCount , orderCount }) ;
+        
+            res.render('user/orderDetails',{ orders , user , cartProductCount , orderCount }) ;
+        
          
     } catch (err) {
-         console.log(err.message) ;
+        console.log(err.message) ;
+         res.json({
+            emptyOrder : true
+         })
     }
 }
 

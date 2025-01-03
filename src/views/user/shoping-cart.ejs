@@ -440,6 +440,8 @@
 									</span>
 								</div>
 							</div>
+							<!-- for showing err messages -->
+							<div class="error-message d-flex justify-content-center align-items-center mb-3" style="color: red;" ></div>
 								<button type="submit" class="  stext-101 cl0 size-116 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer">
 									Proceed to Checkout
 								</button>
@@ -613,6 +615,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 	<script>
 
+		
+
 		// for show empty cart
 		$('.cart-icon ').on('click',(e)=>{
 			e.preventDefault() ;
@@ -681,10 +685,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					if(response.codPayment){
 						location.href = '/orders' 
 					}
-					else{
+					else if (response.onlinePayment){
 						console.log('hey razorpay is working')
 						// function for create order and hendler
 						razorpayPayment (response)
+					}
+					else if(response.addressError){
+						console.log('address error') ;
+						document.querySelector('.error-message').textContent = response.message 
 					}
 				}
 			})
