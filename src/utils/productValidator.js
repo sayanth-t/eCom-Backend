@@ -11,7 +11,7 @@ const productValidator = (product) => {
             errors.push('product name is empty') ;
         }
         if(!validator.isLength(name,{ min : 5 , max : 100})){
-            errors.push('product name characters must 10 to 100') ;
+            errors.push('product name characters must 5 to 100') ;
         }
 
         // validating price

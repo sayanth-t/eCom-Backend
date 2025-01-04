@@ -29,7 +29,11 @@ const productsSchema = new Schema({
     },
     size : {
         type : String ,
-        required : true
+        required : true,
+        enum: {
+            values: ['xs','s','m','l','xl'],
+            message: '{VALUE} is not supported'
+          }
     },
     colour : {
         type : String,
