@@ -64,12 +64,25 @@ adminRouter.get('/admin/tables', adminAuth , adminController.getTables ) ;
 // get charts
 adminRouter.get('/admin/charts', adminAuth ,adminController.getCharts ) ;
 
-
+// get create coupon page
+adminRouter.get('/admin/coupon/create',adminAuth,adminController.getCreateCoupon )
 
 // create a coupen
-adminRouter.post('/admin/coupen/create', adminAuth ,adminController.createCoupon ) ;
+adminRouter.post('/admin/coupon/create', adminAuth ,adminController.createCoupon ) ;
 
 // get all coupens
-adminRouter.get('/admin/coupon/view', adminAuth ,adminController.getCoupons )
+adminRouter.get('/admin/coupon/view', adminAuth ,adminController.getCoupons ) ;
+
+// get coupon edit page
+adminRouter.get('/admin/coupon/edit/:couponId',adminAuth,adminController.getCouponEdit ) ;
+
+// post updated coupon details
+adminRouter.post('/admin/coupon/edit/:couponId',adminAuth,adminController.updateCoupon ) ;
+
+// delete coupon
+adminRouter.delete('/admin/coupon/delete/:couponId',adminAuth,adminController.deleteCoupon ) ;
+
+// get user list 
+adminRouter.get('/admin/user/view',adminAuth,adminController.getUsers ) ;
 
 module.exports = {adminRouter}

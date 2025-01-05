@@ -807,6 +807,23 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	</div>
 
 	<script>
+		// for wishlist empty
+		$('.wishlist-icon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/wishlist' ,
+				method : 'get' ,
+				success : (response) =>{
+					if(response.wishlistEmpty){
+						swal('wishlist is empty!','add products to wishlist', "info");
+					}
+					else{
+						location.href = '/wishlist';
+					}
+				}
+			})
+		})
+
 		// for show empty cart
 		$('.cart-icon ').on('click',(e)=>{
 			e.preventDefault() ;
@@ -814,7 +831,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				url : '/cart',
 				method : 'get',
 				success : (response) => {
-					if(response.cart){
+					if( response.cartEmpty ){
 						swal('cart is empty!','add products to cart', "info");
 					}
 					else{

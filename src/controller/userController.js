@@ -6,6 +6,7 @@ const CartItem = require('../models/cartItem') ;
 const Address = require('../models/address') ;
 const Orders = require('../models/orders') ;
 const Wishlist = require('../models/wishlist')
+const Coupon = require('../models/coupon') ;
 const { ObjectId } = require('mongoose').Types;
 
 const crypto = require('crypto') ;
@@ -284,12 +285,12 @@ const getProduct = async (req,res) => {
         const cartProductCount = await getCartCount(req.cookies) ;
         const orderCount = await getOrderCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
-
+        const wishlistProductCount = await getWishlistCount(req.cookies) ;
         const products = await Products
                                 .find({}) 
                                 .populate('category') ;
 
-         res.render('user/allProducts' ,{products,cartProductCount,isUserLoggedin,orderCount}) ;
+         res.render('user/allProducts' ,{products,cartProductCount,isUserLoggedin,orderCount,wishlistProductCount}) ;
     } catch (err) {
         
     }
@@ -580,7 +581,11 @@ const getWishlist = async (req,res) =>{
                                         .findOne({userId : user._id }) 
                                         .populate('product') ;
 
-        console.log(wishlist)
+        if( !wishlist || wishlist.product.length === 0) {
+            return res.json({
+                wishlistEmpty : true
+            })
+        }
 
         res.render('user/wishlist',{ wishlist , cartProductCount,orderCount,isUserLoggedin,wishlistProductCount }) ;
     } catch (err) {
@@ -599,9 +604,9 @@ const getCart = async (req,res) => {
                             .populate('products')
 
         // if the cart is not present 
-        if(!cart || cart.products.length === 0 ){
+        if( !cart || cart.products.length === 0 ){
             return res.json({
-                cart : true
+                cartEmpty : true
             })
         }
       
@@ -988,6 +993,52 @@ const verifyPayment = async (req,res) => {
     }
 }
 
+// apply coupon
+const applyCoupon = async (req,res) => {
+    try {
+        const user = req.user ;
+        const {coupon} = req.body ;
+
+        console.log('cuopon code : ',coupon) ;
+
+        // check the coupon valid or not
+        const discountCoupon = await Coupon.findOne({ code : coupon }) ;
+
+
+        if(!discountCoupon){
+            throw new Error('invalid coupon code') ;
+        }
+
+        console.log('date now : ', new Date(Date.now())) ;
+        console.log('coupon date : ',discountCoupon.expiry.toISOString() )
+        
+        // check the coupon's validity expires or not
+        if (Date.now() > new Date(discountCoupon.expiry).getTime()) {
+            throw new Error('Coupon expired');
+        }        
+
+        const userCart = await Cart.findOne({ user : user._id }) ;
+        
+        const discountPercentage = discountCoupon.discount ;
+
+        // find the amount to substract from cart total
+        const discountAmount = userCart.total * (discountPercentage/100) ;
+
+        // cart total arter discount 
+        userCart.total = userCart.total - discountAmount ;
+
+        await userCart.save() ;
+
+        res.json({
+            status : true ,
+            cartTotal : userCart.total
+        })
+
+    } catch (err) {
+        console.log(err.message)
+    }
+}
+
 
 
 
@@ -1015,5 +1066,6 @@ module.exports = {getHome,
                   getResetPassword,
                   resetPassword,
                   addtoWishlist,
-                  getWishlist
+                  getWishlist,
+                  applyCoupon
                  }

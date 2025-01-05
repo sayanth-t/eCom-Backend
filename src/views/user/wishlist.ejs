@@ -30,6 +30,8 @@
 
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->
+
+<link href=" https://cdn.jsdelivr.net/npm/sweetalert2@11.15.10/dist/sweetalert2.min.css " rel="stylesheet">
 </head>
 <body class="animsition">
 	
@@ -102,15 +104,23 @@
 						</ul>
 					</div>	
 
+					 
 					 <!-- Icon header -->
-					 <div class="wrap-icon-header flex-w flex-r-m">
+					<div class="wrap-icon-header flex-w flex-r-m">
 						<!-- Search Icon -->
 						<a href="/search" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
 							<i class="zmdi zmdi-search"></i>
 						</a>
+
+						<% if (isUserLoggedin) { %>
+							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						<% } %>
+						
 	
 						<!-- Cart Icon -->
-						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(cartProductCount){ %>
+						<a  class="cart-icon icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(cartProductCount){ %>
 							data-notify = "<%= cartProductCount %>"
 						  <% } else{ %>  
 							data-notify = "0"
@@ -119,17 +129,21 @@
 						</a>
 	
 					   
+						<% if (isUserLoggedin) { %>
 							<!-- Orders Icon -->
-							<a href="/orders" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
-								<i class="zmdi zmdi-assignment"></i>
-							</a>
-						
+							<a  class="orderIcon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti"  data-notify="<%= orderCount %>">
+							   <i class="zmdi zmdi-assignment"></i>
+						   </a>
+						  <% } %>
+
+						 
 	
 						<!-- User Profile Icon -->
 						<a href="/profile/view" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
 							<i class="zmdi zmdi-account"></i>
 						</a>
 					</div>
+	
 	
 	
 
@@ -465,9 +479,45 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</span>
 	</div>
 
-	
+	<!-- for sweet alert -->
+	<script src="vendor/sweetalert/sweetalert.min.js"></script>
 
 	<script>
+
+		
+		// for show empty cart
+		$('.cart-icon ').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/cart',
+				method : 'get',
+				success : (response) => {
+					if(response.cartEmpty){
+						swal('cart is empty!','add products to cart', "info");
+					}
+					else{
+						location.href = '/cart';
+					}
+				}
+			})
+		})
+
+		// for show empty orders
+		$('.orderIcon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/orders',
+				method : 'get',
+				success : (response) => {
+					if(response.emptyOrder){
+						swal('Order list is empty!','buy products!', "info");
+					}
+					else{
+						location.href = '/orders';
+					}
+				}
+			})
+		})
 		
 		function changeQuantity(cartItemId, cartId, count) {
 			const quantityValue = document.querySelector('.num-product').value 

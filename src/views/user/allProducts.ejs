@@ -114,9 +114,11 @@
 							<i class="zmdi zmdi-search"></i>
 						</a>
 
-						<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
-							<i class="zmdi zmdi-favorite-outline"></i>
-						</a>
+						<% if (isUserLoggedin) { %>
+							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						<% } %>
 						
 	
 						<!-- Cart Icon -->
@@ -858,7 +860,22 @@
 
 	<script>
 
-
+		// for wishlist empty
+		$('.wishlist-icon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/wishlist' ,
+				method : 'get' ,
+				success : (response) =>{
+					if(response.wishlistEmpty){
+						swal('wishlist is empty!','add products to wishlist', "info");
+					}
+					else{
+						location.href = '/wishlist';
+					}
+				}
+			})
+		})
 		
 		// for show empty cart
 		$('.cart-icon ').on('click',(e)=>{
@@ -867,7 +884,7 @@
 				url : '/cart',
 				method : 'get',
 				success : (response) => {
-					if(response.cart){
+					if(response.cartEmpty){
 						swal('cart is empty!','add products to cart', "info");
 					}
 					else{

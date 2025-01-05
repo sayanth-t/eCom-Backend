@@ -1,6 +1,6 @@
 const Products = require('../models/products') ;
 const Category = require('../models/category') ;
-const Coupen = require('../models/coupon') ;
+const Coupon = require('../models/coupon') ;
 const Admin = require('../models/admin') ;
 
 const bcrypt = require('bcrypt') ;
@@ -210,10 +210,8 @@ const getEditPage = async (req,res) => {
 
         const categories = await Category
                                 .find({})     
-                                
-                                
-        
-        res.render('admin/productEdit' , {categories,product} ) ;
+
+        res.render('admin/editProduct' , {categories,product} ) ;
     } catch (err) {
         
     }
@@ -232,6 +230,8 @@ const updateProduct = async (req,res) => {
         }
         
         const { name , category , price , description , quantity , size , colour } = req.body ;
+
+        console.log(req.body) ;
 
         const updatedCategory = await Category.findOne({ name : category });
 
@@ -281,13 +281,28 @@ const getCharts = async (req,res) => {
     res.render('admin/pages/charts/chartjs')
 }
 
+// get create coupon page
+const getCreateCoupon = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        res.render('admin/addCoupon',{admin})
+    } catch (err) {
+        
+    }
+}
+
 // create coupen
 const createCoupon = async (req,res) => {
     try {
-        const {coupenCode,startDate,expiry,discount} = req.body ;
+        console.log('coupon is saving...') ;
+
+        const {name,coupenCode,startDate,expiry,discount} = req.body ;
+
+        console.log(coupenCode) ;
 
         // creating new instance for Coupen
-        const coupon = new Coupen({
+        const coupon = new Coupon({
+            name,
             code : coupenCode,
             startDate,
             expiry,
@@ -298,18 +313,88 @@ const createCoupon = async (req,res) => {
 
         console.log(coupon) ;
 
+        res.redirect('/admin/coupon/view') ;
+
     } catch (err) {
-        
+        console.log(err.message) ;
     }
 }
 
 // get all coupons
 const getCoupons = async (req,res) => {
     try {
-        const coupons = await Coupen.find({}) ;
-        res.send(coupons) ;
+        const admin = req.admin ;
+        const coupons = await Coupon.find({}) ;
+        res.render('admin/coupons',{admin,coupons}) ;
     } catch (err) {
         
+    }
+}
+
+// get coupon edit page
+const getCouponEdit = async (req,res) => {
+    try {
+        const {couponId} = req.params ;
+        const coupon = await Coupon.findById(couponId) ;
+
+        res.render('admin/editCoupon',{coupon}) ;
+    } catch (err) {
+        
+    }
+}
+
+// update coupon
+ const updateCoupon = async (req,res) => {
+    try {
+        const {couponId} = req.params ;
+        
+        console.log(req.body) ;
+
+        const {name,couponCode,expiry,discount} = req.body ;
+
+        // updataing coupon
+        await Coupon.updateOne({_id:couponId},{$set:{
+            name : name ,
+            code : couponCode ,
+            expiry : expiry ,
+            discount : discount
+        }})
+
+        res.redirect('/admin/coupon/view') ;
+    } catch (err) {
+        console.log(err.message) ;
+    }
+ }
+
+// get all users 
+const getUsers = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        res.render('admin/users',{admin}) 
+    } catch (err) {
+        
+    }
+}
+
+// delete coupon
+const deleteCoupon = async (req,res) => {
+    try {
+        const {couponId} = req.params ;
+       
+        // deleting the coupon 
+        await Coupon.deleteOne({_id:couponId}) ;
+
+        res.json({
+            couponDelete : true 
+        })
+
+       
+    } catch (err) {
+        console.log(err.message) ;
+        res.status(500).json({
+            couponDelete: false,
+            message: "Error deleting the coupon"
+        });
     }
 }
 
@@ -329,6 +414,11 @@ module.exports = {getDashboard,
                   login ,
                   createCoupon,
                   getCoupons,
-                  logout
+                  logout,
+                  getCreateCoupon,
+                  getUsers,
+                  getCouponEdit ,
+                  updateCoupon ,
+                  deleteCoupon
                   
                 } 

@@ -2,6 +2,10 @@ const mongoose = require('mongoose') ;
 const {Schema} = mongoose ;
 
 const couponSchema = new Schema({
+    name : {
+        type : String,
+        required : true
+    },
     code : {
         type : String,
         required : true

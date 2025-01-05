@@ -93,7 +93,8 @@ userRouter.get('/orders',userAuth , userController.getOrders ) ;
 // verify payment
 userRouter.post('/verify-payment',userAuth,userController.verifyPayment )
 
-
+// apply coupon
+userRouter.post('/applyCoupon',userAuth,userController.applyCoupon )
 
 
 module.exports = {userRouter} ;
