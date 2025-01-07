@@ -64,7 +64,7 @@ const getProfile = async (req,res) => {
         const cartProductCount = await getCartCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
         res.render('user/profilePage',{user,cartProductCount,isUserLoggedin}) ;
-        
+
     } catch (error) {
         
     }
@@ -95,7 +95,7 @@ const editProfile = async (req,res) => {
 
 
         // updating the user profile
-        await Users.updateOne({_id : user._id},{$set : {name,emailId,phoneNumber,address,image : userProfile }})
+        await Users.updateOne({_id : user._id},{$set : {name,emailId,phoneNumber,image : userProfile }})
         res.redirect('/profile/view')
 
         
@@ -307,8 +307,6 @@ const signup = async (req,res) => {
             throw new Error('passwords are not match') ;
         }
 
-       
-
         const validateUser = userValidator(req.body) ;
         // check if there is any error 
         if((await validateUser).isValid === false) {
@@ -389,7 +387,7 @@ const signup = async (req,res) => {
 
           });
 
-        console.log("Message sent: %s", info.messageId );
+        console.log("Message sent: ", info.messageId );
 
         const savedUser = await Users.findOne({emailId}) 
 
@@ -653,7 +651,6 @@ const addToCart = async (req,res) => {
         const {productId} = req.params ;
         const {size,colour,buyQuantity} = req.body ;
 
-
         // finding the product
         const product = await Products.findById(productId) ;
 
@@ -673,7 +670,7 @@ const addToCart = async (req,res) => {
         let cartCount ;
 
         if(userCart){
-            if(userCartItem){
+            if( userCartItem ){
 
                 userCartItem.quantity += Number(buyQuantity) ;
                 userCartItem.total += userCartItem.price * Number(buyQuantity) ;
@@ -823,8 +820,6 @@ const changeCartCount = async (req,res) => {
             cartItem.quantity += Number(count) ;
             cartItem.total = cartItem.total + cartItem.price ;
         }
-        
-      
 
         await cartItem.save() ;
 
@@ -943,7 +938,7 @@ const placeOrder = async (req,res) => {
         
             // creating razorpay order
             const razorpayOrder = {
-                amount : userOrder.totalAmount * 100,
+                amount : userOrder.totalAmount * 100 ,
                 currency : 'INR',
                 receipt: orderId
             }
@@ -952,7 +947,8 @@ const placeOrder = async (req,res) => {
                 console.log(order) ;
                 res.json({
                     onlinePayment : true,
-                    order : order
+                    order : order ,
+                    user : user
                 }) ;
             })
 

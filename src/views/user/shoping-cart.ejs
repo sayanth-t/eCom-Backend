@@ -763,7 +763,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					else if (response.onlinePayment){
 						console.log('hey razorpay is working')
 						// function for create order and hendler
-						razorpayPayment (response)
+						razorpayPayment (response.order,response.user)
 					}
 					else if(response.addressError){
 						console.log('address error') ;
@@ -773,7 +773,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			})
 		}) ;
 
-		function razorpayPayment (order) {
+		function razorpayPayment (order,user) {
 			console.log(order)
 			const options = {
 					"key": "rzp_test_HSolpJ16ypiCZg", // Enter the Key ID generated from the Dashboard
@@ -792,9 +792,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						verifyPayment(response,order) ;
 					},
 					"prefill": {
-						"name": "Gaurav Kumar",
-						"email": "gaurav.kumar@example.com",
-						"contact": "9000090000"
+						"name": user.name ,
+						"email": user.emailId,
+						"contact": order.amount
 					},
 					"notes": {
 						"address": "Razorpay Corporate Office"

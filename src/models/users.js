@@ -33,6 +33,10 @@ const userSchema = new Schema({
         required : true,
         default : false
     },
+    isBlocked : {
+        type : Boolean,
+        default : false 
+    },
     passwordResetToken : {
         type : String
     },
@@ -41,7 +45,7 @@ const userSchema = new Schema({
     }
 })
 
-userSchema.method('createResetPasswordToken',function(){
+userSchema.method( 'createResetPasswordToken' ,function(){
      
     // generating random password token
     const resetToken = crypto.randomBytes(32).toString('hex') ;

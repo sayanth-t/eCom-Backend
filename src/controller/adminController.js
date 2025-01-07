@@ -385,14 +385,41 @@ const getUsers = async (req,res) => {
     try {
         const admin = req.admin ;
         const users = await Users
-                                .find({}, 'name emailId phoneNumber image address')
-                                .populate('Address') ;
-                                
-         
+                                .find({}, 'name emailId phoneNumber image address isBlocked') ;
+                                                       
+
         console.log(users) ;
         res.render('admin/users',{admin,users})  ;
     } catch (err) {
         console.log(err.message) ;
+    }
+}
+
+// blaock or unblock user
+const blockUser = async (req,res) => {
+    try {
+        const {userId} = req.params ;
+        const user = await Users.findById(userId) ;
+
+        let userStatus ;
+
+        if( user.isBlocked === true ) {
+            // updating the user's isBlocked field 
+            await Users.findByIdAndUpdate(userId,{isBlocked:false}) ;
+            userStatus = false
+        }
+        else{
+             // updating the user's isBlocked field 
+             await Users.findByIdAndUpdate(userId,{isBlocked:true}) ;
+             userStatus = true
+        }
+        
+        res.json({
+            userStatus
+        })
+
+    } catch (err) {
+        
     }
 }
 
@@ -442,5 +469,5 @@ module.exports = {getDashboard,
                   getCouponEdit ,
                   updateCoupon ,
                   deleteCoupon,
-                 
+                  blockUser
                 } 
