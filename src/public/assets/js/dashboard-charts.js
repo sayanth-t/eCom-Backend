@@ -1,4 +1,4 @@
-var trafficchart = document.getElementById("trafficflow");
+var trafficchart = document.getElementById("salesFlow");
 var saleschart = document.getElementById("sales");
 
 // new

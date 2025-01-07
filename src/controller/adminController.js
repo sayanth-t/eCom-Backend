@@ -2,11 +2,14 @@ const Products = require('../models/products') ;
 const Category = require('../models/category') ;
 const Coupon = require('../models/coupon') ;
 const Admin = require('../models/admin') ;
+const Users = require('../models/users')
 
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
 
 const {productValidator} = require('../utils/productValidator') ;
+const Orders = require('../models/orders');
+const { success } = require('toastr');
 
 const getLogin = async (req,res) => {
     res.render('admin/login')
@@ -14,6 +17,7 @@ const getLogin = async (req,res) => {
 
 const login = async (req,res) => {
     try {
+       
         const {emailId,password} = req.body ;
         
         // find the admin with entered email id
@@ -55,10 +59,20 @@ const logout = async (req,res) => {
 const getDashboard = async (req,res) =>{
    try {
     const admin = req.admin ;
-    console.log('hey you are in admin dashboard')
-    res.render('admin/dashboard', {admin}) ;
-   } catch (err) {
+    let oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Get the date 7 days ago
     
+        // finding the latest orders
+        const latestOrders = await Orders.aggregate([
+            { $match : { "date" : { $gte : oneWeekAgo }}} ,
+            { $sort : { "date" : -1 }} ,
+            { $project : { "date" : 1 }}
+        ]) ;
+        
+
+    res.render('admin/dashboard',  { admin , latestOrders }) ;
+   } catch (err) {
+    console.log(err.message)
    }
 }
 
@@ -370,9 +384,15 @@ const getCouponEdit = async (req,res) => {
 const getUsers = async (req,res) => {
     try {
         const admin = req.admin ;
-        res.render('admin/users',{admin}) 
+        const users = await Users
+                                .find({}, 'name emailId phoneNumber image address')
+                                .populate('Address') ;
+                                
+         
+        console.log(users) ;
+        res.render('admin/users',{admin,users})  ;
     } catch (err) {
-        
+        console.log(err.message) ;
     }
 }
 
@@ -398,6 +418,8 @@ const deleteCoupon = async (req,res) => {
     }
 }
 
+
+
 module.exports = {getDashboard,
                   getProducts ,
                   getAddProduct ,
@@ -419,6 +441,6 @@ module.exports = {getDashboard,
                   getUsers,
                   getCouponEdit ,
                   updateCoupon ,
-                  deleteCoupon
-                  
+                  deleteCoupon,
+                 
                 } 

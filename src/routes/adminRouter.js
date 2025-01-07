@@ -85,4 +85,6 @@ adminRouter.delete('/admin/coupon/delete/:couponId',adminAuth,adminController.de
 // get user list 
 adminRouter.get('/admin/user/view',adminAuth,adminController.getUsers ) ;
 
+
+
 module.exports = {adminRouter}

@@ -37,13 +37,11 @@ const  { validatePaymentVerification, validateWebhookSignature } = require('../.
 
 const getHome = async (req,res) => {
     try {
-
+        
         const cartProductCount = await getCartCount(req.cookies) ;
         const orderCount = await getOrderCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
         const wishlistProductCount = await getWishlistCount(req.cookies) ;
-
-        console.log(wishlistProductCount) ;
 
         const products = await Products
                                     .find({}) 
@@ -62,9 +60,11 @@ const getHome = async (req,res) => {
 const getProfile = async (req,res) => {
     try {
         const user = req.user ;
+
         const cartProductCount = await getCartCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
-        res.render('user/profilePage',{user,cartProductCount,isUserLoggedin})
+        res.render('user/profilePage',{user,cartProductCount,isUserLoggedin}) ;
+        
     } catch (error) {
         
     }
@@ -301,11 +301,13 @@ const getProduct = async (req,res) => {
 const signup = async (req,res) => {
     try {
 
-        const {name,emailId,phoneNumber,password,confirmPassword} = req.body ;
+        const {name,emailId,phoneNumber,password , confirmPassword} = req.body ;
 
-        const cartProductCount = await getCartCount(req.cookies) ;
-        const orderCount = await getOrderCount(req.cookies) ;
-        const isUserLoggedin = await isLogged(req.cookies) ;
+        if( password !== confirmPassword ) {
+            throw new Error('passwords are not match') ;
+        }
+
+       
 
         const validateUser = userValidator(req.body) ;
         // check if there is any error 
@@ -400,11 +402,34 @@ const signup = async (req,res) => {
 
         await userVerification.save() ;
 
-        res.render('user/otpVerification', { userId : savedUser._id , cartProductCount , orderCount , isUserLoggedin }) ;
+        res.json({
+            signup : true ,
+            userId : savedUser._id 
+        })
+
+        // res.render('user/otpVerification', { userId : savedUser._id , cartProductCount , orderCount , isUserLoggedin }) ;
 
 
     } catch (err) {
-        res.send(err.message) ;
+        console.log(err.message) ;
+        res.json({
+            signupError : true,
+            message : err.message 
+        })
+    }
+}
+
+// get otp entering page
+const getVerifyPage = async (req,res) => {
+    try {
+        const {userId} = req.params ;
+        const cartProductCount = await getCartCount(req.cookies) ;
+        const orderCount = await getOrderCount(req.cookies) ;
+        const isUserLoggedin = await isLogged(req.cookies) ;
+
+        res.render('user/otpVerification',{userId,cartProductCount,orderCount,isUserLoggedin}) ;
+    } catch (err) {
+        
     }
 }
 
@@ -414,13 +439,11 @@ const verifyOtp = async (req,res) => {
         const {otp} = req.body ;
         const {userId} = req.params ;
 
-        ;
-
         const user = await Users.findById(userId) ;
         
-        const userVerification = await UserVerification.findOne({userId,verificationCode:otp}) ;
+        const userVerification = await UserVerification.findOne({userId}) ;
 
-        if( otp !== userVerification.verificationCode){
+        if( otp !== userVerification.verificationCode ){
             throw new Error('invalid OTP') ;
         }
 
@@ -428,39 +451,41 @@ const verifyOtp = async (req,res) => {
             throw new Error('OTP validity expired!') ;
         }
 
-
-        console.log(user) ;
-
         // changing the user isVerified field to true
         user.isVerified = true 
 
-        user.save() ;
+        await user.save() ;
 
-        
-        res.redirect('/login') ;
+        res.json({
+            verfiyOtp : true 
+        })
+        // res.redirect('/login') ;
         
         
     } catch (err) {
         console.log('something went wrong!',err.message) ;
+        res.json({
+            verfiyOtp : false ,
+            message : err.message
+        })
     }
 }
 
 // post login data
 const login = async (req,res) => {
     try {
-
+       
         const {token} = req.cookies  ;
         if(token) {
-            try {
+         
                 await jwt.verify(token, process.env.JWT_PRIVATEKEY) ;
                 return res.redirect('/') ;
-            } catch (err) {
-                throw new Error(err.message) ;
-            } 
+          
         }
 
         const {emailId,password,confirmPassword} = req.body ;
-        console.log(emailId)
+        console.log(req.body)
+        
         // checking with the entered emailId 
         const user = await Users.findOne({emailId}) ;
         if(!user) {
@@ -603,15 +628,17 @@ const getCart = async (req,res) => {
                             .findOne({user:user._id})
                             .populate('products')
 
+        const userAddress = await Address.findOne({userId:user._id}) ;
+        console.log(userAddress) ;
+
         // if the cart is not present 
         if( !cart || cart.products.length === 0 ){
             return res.json({
                 cartEmpty : true
             })
         }
-      
         
-        res.render('user/shoping-cart',{ cart , cartProductCount }) ;
+        res.render('user/shoping-cart',{ cart , cartProductCount , userAddress }) ;
     } catch (err) {
         console.log(err.message) ;
         res.redirect('/login') ;
@@ -832,6 +859,8 @@ const placeOrder = async (req,res) => {
         const user = req.user ;
         const {payingMethod,country,state,address,city,postcode} = req.body ;
 
+        console.log('address : ', address )
+
         const {isValid,errors} = addressValidator(req.body) ;
 
         if(!isValid){
@@ -853,21 +882,36 @@ const placeOrder = async (req,res) => {
             status = 'pending' ;
         }
 
-        // creating address document for user
-        const userAddress = new Address ({
-            userId : user._id ,
-            country : country  ,
-            state : state ,
-            address : address ,
-            city : city ,
-            pinNo : postcode
+        if(!user.address){
+            // creating address document for user
+            const userAddress = new Address ({
+                userId : user._id ,
+                country : country  ,
+                state : state ,
+                address : address ,
+                city : city ,
+                pinNo : postcode
 
-        })
+            }) ;
+            await userAddress.save() ;
 
-        await userAddress.save() ;
+            user.address = userAddress._id ;
+            await user.save() ;
+        }
+        else{
+            
+            // updating the user address
+            await Address.findOneAndUpdate({userId:user._id},{
+                country : country  ,
+                state : state ,
+                address : address ,
+                city : city ,
+                pinNo : postcode
+            })
 
-        user.address = userAddress._id ;
-        await user.save() ;
+        }
+
+        const userAddress = await Address.findOne({ userId : user._id }) ;
 
         const orderId = new ObjectId() ;
         // creating order model
@@ -1067,5 +1111,6 @@ module.exports = {getHome,
                   resetPassword,
                   addtoWishlist,
                   getWishlist,
-                  applyCoupon
+                  applyCoupon,
+                  getVerifyPage
                  }

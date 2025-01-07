@@ -207,20 +207,25 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
+
+                                <!-- sales overview chart -->
                                 <div class="col-md-6">
                                     <div class="card">
                                         <div class="content">
                                             <div class="head">
-                                                <h5 class="mb-0">Traffic Overview</h5>
-                                                <p class="text-muted">Current year website visitor data</p>
+                                                <h5 class="mb-0">Sales Overview</h5>
+                                                <p class="text-muted">Current week sales data</p>
+                                                
                                             </div>
-                                            <div class="canvas-wrapper">
-                                                <canvas class="chart" id="trafficflow"></canvas>
+                                            <div class="canvas-wrapper" id="salesData" sale-data = "<%= latestOrders %>" >
+                                                <canvas class="chart" id="salesFlow"></canvas>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+
+
+                                <!-- <div class="col-md-6">
                                     <div class="card">
                                         <div class="content">
                                             <div class="head">
@@ -232,7 +237,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -418,10 +423,87 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- for adding chart -->
+     <script>
+        var trafficchart = document.getElementById("salesFlow");
+        var saleschart = document.getElementById("sales");
+
+        // Access the latestOrders data passed from the backend
+        const latestOrders = "<%= latestOrders %>"
+        
+        // new
+        var myChart1 = new Chart(trafficchart, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                data: ['1135', '1140', '1145', '1168', '1150', '1145', '1155', '1155', '1150', '1160', '1185', '1190'],
+                backgroundColor: "rgba(48, 164, 255, 0.2)",
+                borderColor: "rgba(48, 164, 255, 0.8)",
+                fill: true,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart',
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'right',
+                },
+                title: {
+                    display: true,
+                    text: 'Number of Visitors',
+                    position: 'left',
+                },
+            },
+        }
+        });
+
+        // new
+        var myChart2 = new Chart(saleschart, {
+        type: 'bar',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                    label: 'Income',
+                    data: ["280", "300", "400", "600", "450", "400", "500", "550", "450", "650", "950", "1000"],
+                    backgroundColor: "rgba(76, 175, 80, 0.5)",
+                    borderColor: "#6da252",
+                    borderWidth: 1,
+            }]
+        },
+        options: {
+            animation: {
+                duration: 2000,
+                easing: 'easeOutQuart',
+            },
+            plugins: {
+                legend: {
+                    display: false,
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Number of Sales',
+                    position: 'left',
+                },
+            },
+        }
+        });
+
+     </script>
+
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
     <script src="/assets/vendor/chartsjs/Chart.min.js"></script>
-    <script src="/assets/js/dashboard-charts.js"></script>
+    
     <script src="/assets/js/script.js"></script>
 </body>
 

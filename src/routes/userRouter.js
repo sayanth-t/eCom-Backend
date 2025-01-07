@@ -57,6 +57,9 @@ userRouter.get('/signup' ,userController.getSignup ) ;
 // post signup data
 userRouter.post('/signup' , userController.signup ) ;
 
+// get otp entering page
+userRouter.get('/veriry-otp/:userId', userController.getVerifyPage ) ;
+
 // post verify OTP 
 userRouter.post('/verify-otp/:userId',userController.verifyOtp) ;
 

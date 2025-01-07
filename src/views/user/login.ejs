@@ -280,7 +280,7 @@
 			  Login
 		   </div>
 	
-		   <form id="signupForm"  method="post">
+		   <form id="loginForm"  method="post">
 			
 			  <div class="field">
 				  <input name="emailId" type="email" required>
@@ -491,12 +491,14 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script>
 
 		// making post request to /login
-		$('#signupForm').submit((e)=>{
+		$('#loginForm').submit((e)=>{
 			e.preventDefault() ;
 
+			console.log('login button clickedd')
 			// getting the form data
-			const formData = $('#signupForm').serialize() ;
-
+			const formData = $('#loginForm').serialize() ;
+			console.log(formData) ;
+			
 			$.ajax({
 				url : '/login' ,
 				method : 'post' ,

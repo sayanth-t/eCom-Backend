@@ -52,6 +52,16 @@ Notes:  decreasing heading by 0.4em with every subsequent heading level
 /*------------------------------------------------------------------
 [1. Body / #body]
 */
+
+    .profile-image {
+        width: 50px; /* Adjust the size as needed */
+        height: 50px; /* Ensure height matches width */
+        border-radius: 50%; /* Makes the image round */
+        object-fit: cover; /* Ensures the image is cropped to fit the circular shape */
+    }
+
+
+
 @font-face {
     font-family: "Lato";
     font-style: normal;
@@ -731,7 +741,7 @@ table.dataTable>tbody>tr.child ul.dtr-details {
 }
 
 .form-control:focus,
-.form-select:focus, {
+.form-select:focus {
     box-shadow: none !important;
     border: 2px solid #1e84c4;
     background-color: #FAFAFA;

@@ -24,7 +24,8 @@ const userSchema = new Schema({
         required : true
     },
     address : {
-        type : Object,
+        type : mongoose.Schema.Types.ObjectId ,
+        ref : 'Address' ,
         required : false 
     },
     isVerified : {
