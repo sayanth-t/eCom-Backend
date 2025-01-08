@@ -115,7 +115,7 @@
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">New Orders</p>
-                                                <span class="number">6,267</span>
+                                                <span class="number"><%= lasteWeekOrderCount  %></span>
                                             </div>
                                         </div>
                                     </div>
@@ -140,20 +140,20 @@
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">Revenue</p>
-                                                <span class="number">$180,900</span>
+                                                <span class="number"><%= lastWeekRevenue %></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
                                         <div class="stats">
-                                            <i class="fas fa-calendar"></i> For this Month
+                                            <i class="fas fa-calendar"></i> For this Week
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
+                        <!-- <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                             <div class="card">
                                 <div class="content">
                                     <div class="row">
@@ -202,27 +202,30 @@
                                     </div>
                                 </div>
                             </div>
+                        </div> -->
+                   
+                        <!-- sales overview chart -->
+                        <div class="col-md-6 col-lg-10">
+                            <div class="card">
+                                <div class="content">
+                                    <div class="head">
+                                        <h5 class="mb-0">Sales Overview</h5>
+                                        <p class="text-muted" >Current week sales data</p>
+                                        
+                                    </div>
+                                    <div class="canvas-wrapper" id="salesData" >
+                                        <canvas class="chart" id="salesFlow"></canvas>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+
                     </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="row">
 
-                                <!-- sales overview chart -->
-                                <div class="col-md-6">
-                                    <div class="card">
-                                        <div class="content">
-                                            <div class="head">
-                                                <h5 class="mb-0">Sales Overview</h5>
-                                                <p class="text-muted" >Current week sales data</p>
-                                                
-                                            </div>
-                                            <div class="canvas-wrapper" id="salesData" >
-                                                <canvas class="chart" id="salesFlow"></canvas>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                
 
 
                                 <!-- <div class="col-md-6">
@@ -244,8 +247,8 @@
                             <div class="card">
                                 <div class="content">
                                     <div class="head">
-                                        <h5 class="mb-0">Top Visitors by Country</h5>
-                                        <p class="text-muted">Current year website visitor data</p>
+                                        <h5 class="mb-0">Top Orders by Country</h5>
+                                        <p class="text-muted">Current week orders data</p>
                                     </div>
                                     <div class="canvas-wrapper">
                                         <table class="table table-striped">

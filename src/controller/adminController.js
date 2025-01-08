@@ -62,7 +62,25 @@ const getDashboard = async (req,res) =>{
     let oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Get the date 7 days ago
 
+    // for find total orders in last week
+    const ordersCount = await Orders.aggregate([
+        { $match : { date : { $gte : oneWeekAgo }}},
+        { $group : { _id : null  ,
+            totalOrders : { $sum : 1 }
+        }}
+    ])
+    const lasteWeekOrderCount = ordersCount[0].totalOrders ;
 
+    // for finding total revanue
+    const revenue = await Orders.aggregate([
+        { $match : { date : { $gte : oneWeekAgo }}},
+        { $group : { _id : null  ,
+            totalRevenue : { $sum : "$totalAmount" }
+        }}
+    ])
+    const lastWeekRevenue = revenue[0].totalRevenue ;
+
+    // for creating chart
     const ordersPerDay = await Orders.aggregate([
         { $match : { date : { $gte : oneWeekAgo }}},
         { $group : { _id : "$date" ,
@@ -70,18 +88,27 @@ const getDashboard = async (req,res) =>{
         }},
         { $sort : { _id : 1 }}
     ])
-
     console.log(ordersPerDay) ;
-    
+
     let lastWeekSales = [] ;
 
     ordersPerDay.forEach( sale => {
         lastWeekSales.push(sale.totalSales)
     })
 
-    console.log(lastWeekSales) ;
+    // find top orders by country
+    const countries  = await Orders.aggregate([
+        { $match : { date : { $gte : oneWeekAgo }}},
+        { $lookup : {
+            from : "Address" ,
+            localField : "address" ,
+            foreignField : "_id" ,
+            as : "addressDetails"
+        }}
+    ])
+    console.log(countries) ;
 
-    res.render('admin/dashboard',  { admin , lastWeekSales : lastWeekSales }) ;
+    res.render('admin/dashboard',  { admin , lastWeekSales , lasteWeekOrderCount , lastWeekRevenue }) ;
    } catch (err) {
     console.log(err.message)
    }

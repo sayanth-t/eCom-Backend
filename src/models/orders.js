@@ -12,6 +12,7 @@ const ordersSchema = new Schema({
     },
     address : {
         type : mongoose.Schema.Types.ObjectId ,
+        ref : 'Address' ,
         required : true
     },
     products : {
