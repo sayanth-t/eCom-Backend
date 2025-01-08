@@ -214,10 +214,10 @@
                                         <div class="content">
                                             <div class="head">
                                                 <h5 class="mb-0">Sales Overview</h5>
-                                                <p class="text-muted">Current week sales data</p>
+                                                <p class="text-muted" >Current week sales data</p>
                                                 
                                             </div>
-                                            <div class="canvas-wrapper" id="salesData" sale-data = "<%= latestOrders %>" >
+                                            <div class="canvas-wrapper" id="salesData" >
                                                 <canvas class="chart" id="salesFlow"></canvas>
                                             </div>
                                         </div>
@@ -431,16 +431,19 @@
         var trafficchart = document.getElementById("salesFlow");
         var saleschart = document.getElementById("sales");
 
-        // Access the latestOrders data passed from the backend
-        const latestOrders = "<%= latestOrders %>"
-        
-        // new
+        const sales ="<%= JSON.stringify(lastWeekSales) %>" ;
+        const lastWeekSales = JSON.parse(sales) ;
+
+        console.log(lastWeekSales) ;
+        console.log(typeof(lastWeekSales))
+        // new 
         var myChart1 = new Chart(trafficchart, {
         type: 'line',
         data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            labels: ['Jan1','Jan2','Jan3','Jan4','Jan5','Jan6','Jan7'],
             datasets: [{
-                data: ['1135', '1140', '1145', '1168', '1150', '1145', '1155', '1155', '1150', '1160', '1185', '1190'],
+
+                data: lastWeekSales ,
                 backgroundColor: "rgba(48, 164, 255, 0.2)",
                 borderColor: "rgba(48, 164, 255, 0.8)",
                 fill: true,
@@ -459,7 +462,7 @@
                 },
                 title: {
                     display: true,
-                    text: 'Number of Visitors',
+                    text: 'Number of sales',
                     position: 'left',
                 },
             },

@@ -138,23 +138,23 @@
                                             <td><%= user.name %></td>
                                             <td><%= user.emailId %></td>
                                             <td><%= user.phoneNumber %></td>
-                                            <td><%= user.address %></td>
+                                            <td><% if (user.address) { %>
+                                             <p><%= user.address.country %> , <%= user.address.state %></p>
+                                             <p><%= user.address.address %> , <%= user.address.city %></p>
+                                             
+                                            <% } %></td>
                                             <td class="text-end">
                                                 <a onclick="blockUser('<%= user._id %>')" class="btn btn-outline-warning btn-rounded">
+
                                                     <% if (user.isBlocked) { %>
-
                                                         <!-- unblock icon -->
-                                                        <i class="fas fa-unlock unblock"  id="unblock<%= user._id %>" ></i>
-
+                                                        <i class=" fas fa-unlock unblock"  id="unblock<%= user._id %>" ></i>
                                                     <% } else { %>
-
                                                         <!-- block icon -->
-                                                        <i class="fas fa-ban block" id="block<%= user._id %>" ></i>
-
-                                                    <% } %>
+                                                        <i class=" fas fa-ban block" id="block<%= user._id %>" ></i>
+                                                    <% } %>         
                                                     
                                                 </a>
-                                               
                                                 <a href="" class="btn btn-outline-danger btn-rounded"><i class="fas fa-trash"></i></a>
                                             </td>
                                         </tr>
@@ -170,33 +170,31 @@
     </div>
 
     <script>
-        
-            
-        // for block user
-        function blockUser (userId) {
-            const blockIcon = document.getElementById("block" + userId);
-            const unblockIcon = document.getElementById("unblock" + userId);
-            
-            if( blockIcon && unblockIcon ) {
-                $.ajax({
-                    url : `/admin/user/block/${userId}` ,
-                    method : 'post' ,
-                    success : (response) => {
-                        
-                        if(response.userStatus){
-                            blockIcon.style.display = "none";
-                            unblockIcon.style.display = "inline";
-                        }
-                        else{
-                            blockIcon.style.display = "inline";
-                            unblockIcon.style.display = "none";
-                        }
 
-                    }
-                })
-            }
+             // for block user
+            function blockUser (userId) {
+                
+                const blockIcon = document.getElementById("block" + userId);
+                const unblockIcon = document.getElementById("unblock" + userId);
+                
+                    $.ajax({
+                        url : `/admin/user/block/${userId}` ,
+                        method : 'post' ,
+                        success : (response) => {
+                            
+                            if(response.userStatus){
+                                blockIcon.style.display = "none";
+                                unblockIcon.style.display = "inline";
+                            }
+                            else{
+                                blockIcon.style.display = "inline";
+                                unblockIcon.style.display = "none";
+                            }
 
-        }
+                        }
+                    })
+                }
+
     </script>
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

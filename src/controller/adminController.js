@@ -61,16 +61,27 @@ const getDashboard = async (req,res) =>{
     const admin = req.admin ;
     let oneWeekAgo = new Date();
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Get the date 7 days ago
-    
-        // finding the latest orders
-        const latestOrders = await Orders.aggregate([
-            { $match : { "date" : { $gte : oneWeekAgo }}} ,
-            { $sort : { "date" : -1 }} ,
-            { $project : { "date" : 1 }}
-        ]) ;
-        
 
-    res.render('admin/dashboard',  { admin , latestOrders }) ;
+
+    const ordersPerDay = await Orders.aggregate([
+        { $match : { date : { $gte : oneWeekAgo }}},
+        { $group : { _id : "$date" ,
+            totalSales : { $sum : 1 }
+        }},
+        { $sort : { _id : 1 }}
+    ])
+
+    console.log(ordersPerDay) ;
+    
+    let lastWeekSales = [] ;
+
+    ordersPerDay.forEach( sale => {
+        lastWeekSales.push(sale.totalSales)
+    })
+
+    console.log(lastWeekSales) ;
+
+    res.render('admin/dashboard',  { admin , lastWeekSales : lastWeekSales }) ;
    } catch (err) {
     console.log(err.message)
    }
@@ -385,7 +396,8 @@ const getUsers = async (req,res) => {
     try {
         const admin = req.admin ;
         const users = await Users
-                                .find({}, 'name emailId phoneNumber image address isBlocked') ;
+                                .find({}, 'name emailId phoneNumber image address isBlocked')
+                                .populate('address')
                                                        
 
         console.log(users) ;
@@ -398,26 +410,26 @@ const getUsers = async (req,res) => {
 // blaock or unblock user
 const blockUser = async (req,res) => {
     try {
+        
         const {userId} = req.params ;
         const user = await Users.findById(userId) ;
-
-        let userStatus ;
 
         if( user.isBlocked === true ) {
             // updating the user's isBlocked field 
             await Users.findByIdAndUpdate(userId,{isBlocked:false}) ;
-            userStatus = false
+            return res.json({
+                unblocked : true
+            })
         }
         else{
              // updating the user's isBlocked field 
              await Users.findByIdAndUpdate(userId,{isBlocked:true}) ;
-             userStatus = true
+             return res.json({
+                blocked : true
+            })
         }
         
-        res.json({
-            userStatus
-        })
-
+        
     } catch (err) {
         
     }
