@@ -1079,8 +1079,56 @@ const applyCoupon = async (req,res) => {
     }
 }
 
+// for searching product
+const searchProduct = async (req,res) => {
+    try {
+        const {inputData} = req.body ;
 
+        // searching products in product collection
+        const searchProducts = await Products.find({
+            name : {
+                $regex : inputData ,
+                $options : "i" // make it not case sensitive
+            }
+        })
 
+        if(searchProducts.length === 0) {
+            return res.json({
+                status : false
+            })
+        }
+        
+        res.status(200).json({
+            status : true ,
+            searchProducts
+        })
+
+    } catch (err) {
+        console.log(err.message) ;
+        res.json({
+            status : false
+        })
+    }
+}
+
+const filterProduct = async (req,res) => {
+    try {
+        const {colour} = req.body ;
+        
+        // find the products with entered colour
+        const products = await Products.find({
+            colour 
+        })
+        if(products){
+            res.json({
+                status : true,
+                products
+            })
+        }
+    } catch (err) {
+        
+    }
+}
 
 
 module.exports = {getHome,
@@ -1108,5 +1156,7 @@ module.exports = {getHome,
                   addtoWishlist,
                   getWishlist,
                   applyCoupon,
-                  getVerifyPage
+                  getVerifyPage,
+                  searchProduct,
+                  filterProduct
                  }

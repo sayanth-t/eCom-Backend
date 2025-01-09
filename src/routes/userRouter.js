@@ -1,7 +1,6 @@
 const express = require('express') ;
 const userRouter = express() ;
 
-
 const multer = require('multer') ;
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -97,7 +96,13 @@ userRouter.get('/orders',userAuth , userController.getOrders ) ;
 userRouter.post('/verify-payment',userAuth,userController.verifyPayment )
 
 // apply coupon
-userRouter.post('/applyCoupon',userAuth,userController.applyCoupon )
+userRouter.post('/applyCoupon',userAuth,userController.applyCoupon ) ;
+
+// for product search 
+userRouter.post('/product-search',userController.searchProduct ) ;
+
+// filter products 
+userRouter.post('/filter-products',userController.filterProduct ) ;
 
 
 module.exports = {userRouter} ;

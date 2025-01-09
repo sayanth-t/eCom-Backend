@@ -17,7 +17,7 @@ const userSchema = new Schema({
     },
     image : {
         type : String ,
-        default : "https://img.freepik.com/premium-vector/people-saving-money_24908-51568.jpg?w=826" 
+        default : "user-2935527_1280.png" 
     },
     password : {
         type : String,

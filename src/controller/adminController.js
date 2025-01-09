@@ -88,25 +88,26 @@ const getDashboard = async (req,res) =>{
         }},
         { $sort : { _id : 1 }}
     ])
-    console.log(ordersPerDay) ;
-
+    
     let lastWeekSales = [] ;
 
     ordersPerDay.forEach( sale => {
         lastWeekSales.push(sale.totalSales)
     })
 
+    console.log(lastWeekSales) ;
+
     // find top orders by country
-    const countries  = await Orders.aggregate([
-        { $match : { date : { $gte : oneWeekAgo }}},
-        { $lookup : {
-            from : "Address" ,
-            localField : "address" ,
-            foreignField : "_id" ,
-            as : "addressDetails"
-        }}
-    ])
-    console.log(countries) ;
+    // const countries  = await Orders.aggregate([
+    //     { $match : { date : { $gte : oneWeekAgo }}},
+    //     { $lookup : {
+    //         from : "Address" ,
+    //         localField : "address" ,
+    //         foreignField : "_id" ,
+    //         as : "addressDetails"
+    //     }}
+    // ])
+    // console.log(countries) ;
 
     res.render('admin/dashboard',  { admin , lastWeekSales , lasteWeekOrderCount , lastWeekRevenue }) ;
    } catch (err) {

@@ -1,8 +1,13 @@
 const express = require('express') ;
 const app = express() ;
 const {connectDB} = require('./config/dataBase') ;
+
+const nocache = require('nocache') ;
+app.use(nocache()) ;
+
 require('dotenv').config() ;
 app.set('view engine','ejs') ;
+
 
  
 const {userRouter} = require('./routes/userRouter') ;
@@ -21,9 +26,6 @@ const path = require('path');
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.set('views', path.join(__dirname, 'views' ));
-
-const nocache = require('nocache') ;
-app.use(nocache()) ;
 
 app.use('/',userRouter) ;
 app.use('/',adminRouter) ;

@@ -1,3 +1,5 @@
+
+
 /* Style for the profile image */
 #profileDisplay {
   width: 120px; /* Set a fixed width for the image */
@@ -7,6 +9,19 @@
   border: 4px solid #fff; /* White border around the image */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a shadow for depth */
   transition: transform 0.3s ease; /* Smooth scale transition on hover */
+}
+
+#searchResultsContainer {
+  background-color: rgb(255, 255, 255);
+  position: absolute;
+  z-index: 1;
+  width: 750px;
+  flex-wrap: wrap;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+  padding-bottom: 2px;
 }
 
 
