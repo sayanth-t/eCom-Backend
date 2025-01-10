@@ -7,6 +7,7 @@ const Address = require('../models/address') ;
 const Orders = require('../models/orders') ;
 const Wishlist = require('../models/wishlist')
 const Coupon = require('../models/coupon') ;
+const Category = require('../models/category') ;
 const { ObjectId } = require('mongoose').Types;
 
 const crypto = require('crypto') ;
@@ -1082,15 +1083,36 @@ const applyCoupon = async (req,res) => {
 // for searching product
 const searchProduct = async (req,res) => {
     try {
-        const {inputData} = req.body ;
+        const { inputData , category} = req.body ;
 
-        // searching products in product collection
-        const searchProducts = await Products.find({
-            name : {
-                $regex : inputData ,
-                $options : "i" // make it not case sensitive
-            }
-        })
+        console.log(category) ;
+
+        let searchProducts ;
+        if( !category || category === '*' ){
+            // searching products in product collection
+            searchProducts = await Products.find({
+                name : {
+                    $regex : inputData ,
+                    $options : "i" // make it not case sensitive
+                }
+            }).populate('category') 
+        }
+        else{
+            // find the category
+            const categoryDetails = await Category.findOne({
+                name : category
+            })
+
+            // searching products in product collection
+            searchProducts = await Products.find({
+                name : {
+                    $regex : inputData ,
+                    $options : "i" // make it not case sensitive
+                },
+                category : categoryDetails._id
+            }).populate('category') 
+        }
+        
 
         if(searchProducts.length === 0) {
             return res.json({

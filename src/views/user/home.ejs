@@ -224,23 +224,23 @@
 						All Products
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".women">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="women">
 						Women
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".men">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="men">
 						Men
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".bag">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="bag">
 						Bag
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".shoes">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="shoes">
 						Shoes
 					</button>
 
-					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter=".watches">
+					<button class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5" data-filter="watches">
 						Watches
 					</button>
 				</div>
@@ -271,8 +271,8 @@
 					
 				</div>
 
-				<!-- Filter -->
-				<div class="dis-none panel-filter w-full p-t-10">
+			<!-- Filter -->
+			<div class="dis-none panel-filter w-full p-t-10">
 					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
 
 						<!-- sort by -->
@@ -422,9 +422,9 @@
 				<div class=" col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item <%= product.category.name %>">
 					<!-- Block -->
 						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="/product-images/<%= product.image %>" alt="IMG-PRODUCT">
-	
+
+							<div class="block2-pic hov-img0" >
+								<img src="/product-images/<%= product.image[0] %>" data-images = "<%= product.image %>" alt="IMG-PRODUCT">
 								<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
 								productId = "<%= product._id %>">
 									Quick View
@@ -461,11 +461,11 @@
 			</div>
 
 			<!-- when searching a product -->
-			<div class="showSearchProduct row isotope-grid d-none " style="margin-bottom: 485px;">	
+			<div class="showSearchProduct row isotope-grid d-none " style="margin-bottom: 485px; position: relative; height: 486.15px; ">	
 			</div>
 			
 			<!-- for show no matched search products -->
-			<div class="noSearchProducts  d-none " >	
+			<div class="noSearchProducts d-none " >	
 			</div>
 
 			<!-- Load more -->
@@ -642,18 +642,49 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				</button>
 
 				<div class="row">
+					<!-- after change -->
 					<div class="col-md-6 col-lg-7 p-b-30">
 						<div class="p-l-25 p-r-30 p-lr-0-lg">
 							<div class="wrap-slick3 flex-sb flex-w">
-								<!-- <div class="wrap-slick3-dots"></div> -->
+
+								<!-- <div class="wrap-slick3-dots " ></div> -->
+
+								<div></div>
+								
 								<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
 
 								<div class="slick3 gallery-lb">
-									<div class="productPreview item-slick3" >
-										<div class="wrap-pic-w pos-relative">
-											<img class="product-image"  alt="IMG-PRODUCT">
 
-											<a class="product-fullView flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
+									<!-- image 1 -->
+									<div class="productPreview1 item-slick3" data-thumb="" >
+										<div class="wrap-pic-w pos-relative">
+											<img  class="product-image1"  alt="IMG-PRODUCT">
+
+											<a class="product-fullView1 flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
+												
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
+									</div>
+
+									<!-- image 2 -->
+									<div class="productPreview2 item-slick3" data-thumb="" >
+										<div class="wrap-pic-w pos-relative">
+											<img  class="product-image2"  alt="IMG-PRODUCT">
+
+											<a class="product-fullView2 flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
+												
+												<i class="fa fa-expand"></i>
+											</a>
+										</div>
+									</div>
+
+									<!-- image 2 -->
+									<div class="productPreview3 item-slick3" data-thumb="" >
+										<div class="wrap-pic-w pos-relative">
+											<img  class="product-image3"  alt="IMG-PRODUCT">
+
+											<a class="product-fullView3 flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="images/product-detail-01.jpg">
 												
 												<i class="fa fa-expand"></i>
 											</a>
@@ -773,20 +804,35 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	 <!-- Toastr JS -->
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+	 <!-- for filteringg -->
 	 <script>
-		// for filtering
+		
 		$(document).ready( function () {
+
+			const filterButton = document.querySelector(".js-show-filter");
+   		    const iconCloseFilter = document.querySelector(".icon-close-filter");
 
 			const showFilteredProducts = document.querySelector('.showSearchProduct') ;
 			const showProducts = document.querySelector('.showProducts') ;
 
+			// when filter option closes
+			iconCloseFilter.addEventListener('click',()=>{
+				showProducts.classList.remove("d-none") ;
+				showFilteredProducts.classList.add('d-none') ;
+				
+
+				// remove the animation		
+			   showFilteredProducts.addEventListener('animationend', () => {
+					showFilteredProducts.classList.remove('faade-in');
+			   });
+			})
 			// when clicking the link for filter
 			$(".filter-link").on('click', function (e) {
 				e.preventDefault() ;
 
 				// removing the existing html content 
 				showFilteredProducts.innerHTML = "" ;
-				
+
 				const color = $(this).data("color") ;
 
 				const filterData = {
@@ -803,10 +849,17 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							
 							showProducts.classList.add("d-none") ;
 							showFilteredProducts.classList.remove('d-none') ;
-							
+
+							showFilteredProducts.classList.add('faade-in');
+
+							// remove the animation
+							showFilteredProducts.addEventListener('animationend', () => {
+									showFilteredProducts.classList.remove('faade-in');
+							});
+									
 							response.products.forEach((product)=>{
-								const productContainer = document.createElement("div") ;
-							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item') ;
+							const productContainer = document.createElement("div") ;
+							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item', `${product.category.name}`) ;
 							productContainer.innerHTML = `
 							            
 											<!-- Block -->
@@ -856,7 +909,6 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 		})
 	 </script>
-	
 
 	 <script>
 		// for quick view after searching
@@ -924,11 +976,32 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		
 	 </script>
 
-	<script>
+	 <!-- for searching product -->
+	 <script>
+
+		// filtering based category
+		const filter = $('.filter-tope-group');
+		// search element
+		let searchButton = document.querySelector('.js-show-search');
+
+		// filter items on button click
+		filter.each(function () {
+			filter.on('click', 'button', function () {
+				var filterValue = $(this).attr('data-filter') ;
+				console.log(filterValue) ;
+				// add 'data-categroy' attribute
+				searchButton.setAttribute('data-category',filterValue) ;
+				
+			});
+		});
+
+
 		// for searching product
 		document.getElementById('inputBox').onkeyup = searchProduct ;
 
 		function searchProduct () {
+			
+			const category = searchButton.getAttribute('data-category') ;
 
 			const inputData = document.getElementById('inputBox').value ;
 			const showSearchProduct = document.querySelector('.showSearchProduct') ;
@@ -939,13 +1012,20 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				$.ajax({
 				url : '/product-search' ,
 				method : 'post' ,
-				data : { inputData } ,
+				data : { inputData , category } ,
 				success : (response) => {
 					if(response.status ) {
 						
 						showProducts.classList.add("d-none") ;
 						noSearchProducts.classList.add('d-none') ;
 						showSearchProduct.classList.remove('d-none') ;
+
+						showSearchProduct.classList.add('faade-in');
+
+						// remove the animation after animation complete
+						showSearchProduct.addEventListener('animationend', () => {
+									showFilteredProducts.classList.remove('faade-in');
+						});
 
 						console.log(showSearchProduct)
 						// removing the all html contents
@@ -954,7 +1034,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						response.searchProducts.forEach( product => {
 							
 							const productContainer = document.createElement("div") ;
-							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item') ;
+							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item' , `${product.category.name}`) ;
 							productContainer.innerHTML = `
 							            
 											<!-- Block -->
@@ -1003,6 +1083,9 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						showSearchProduct.classList.add('d-none') ;
 						noSearchProducts.classList.remove('d-none') ;
 
+						noSearchProducts.classList.add('faade-in');
+
+
 						// removing the html content from noSearch products
 						noSearchProducts.innerHTML = "" ;
 
@@ -1026,6 +1109,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				showProducts.classList.remove("d-none") ;
 			    showSearchProduct.classList.add('d-none') ;
 				noSearchProducts.classList.add('d-none') ;
+
+				// add animation to showProducts
+				showProducts.classList.add('faade-in');
+
 
 			}
 		}
@@ -1106,10 +1193,11 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				}
 			})
 		}
-	</script>
-	<script>
+	 </script>
 
-		// for quick view
+	 <!-- when quick view button clickess -->
+	 <script>
+		document.addEventListener('DOMContentLoaded', function () {
 		// Add event listeners to all "Quick View" buttons
 		document.querySelectorAll('.js-show-modal1').forEach(button => {
 			button.addEventListener('click', (event) => {
@@ -1127,23 +1215,34 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				const productDescription = productElement.querySelector('.description').textContent.trim();
 				const productImage = productElement.querySelector('.block2-pic img').getAttribute('src');
 
+				// getting images
+				const productImages = productElement.querySelector('.block2-pic img').getAttribute('data-images') ;
+				const images = productImages.split(",") ;
+
 				// to show product details
 				const nameElement = document.querySelector('.product-name') ;
 				const priceElement = document.querySelector('.product-price') ;
 				const descriptionElement = document.querySelector('.product-description') ;
-				const imageElement = document.querySelector('.product-image') ;
-				const prodcuctFullView = document.querySelector('.product-fullView') ;
-				const productPreview = document.querySelector('.productPreview') ;
-
+				
 				nameElement.innerHTML = productName ;
 				priceElement.innerHTML = productPrice ;
 				descriptionElement.innerHTML = productDescription ;
 
-				imageElement.setAttribute('src',productImage) ;
-				prodcuctFullView.setAttribute('href',productImage) ;
-				productPreview.setAttribute('data-thumb', productImage ) ;
-		
+				let i = 1 ;
+				images.forEach((image)=>{
 
+					const imageElement = document.querySelector(`.product-image${i}`) ;
+					const prodcuctFullView = document.querySelector(`.product-fullView${i}`) ;
+					const productPreview = document.querySelector(`.productPreview${i}`) ;
+
+					imageElement.setAttribute('src',`/product-images/${image}`) ;
+					prodcuctFullView.setAttribute('href',`/product-images/${image}`) ;
+					productPreview.setAttribute('src', `/product-images/${image}` ) ;
+
+					i++ ;
+			
+				})
+				
 				// using ajax make post request 
 				$("#cart-form").submit((e)=>{
 					e.preventDefault() ;
@@ -1173,9 +1272,15 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 
 			});
 		});
+   		
+		});
 
 		
-	</script>
+		
+
+		
+	 </script>
+
 <!--===============================================================================================-->	
 	<script src="vendor/jquery/jquery-3.2.1.min.js"></script>
 <!--===============================================================================================-->

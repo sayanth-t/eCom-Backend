@@ -4,12 +4,16 @@ const Coupon = require('../models/coupon') ;
 const Admin = require('../models/admin') ;
 const Users = require('../models/users')
 
+
+
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
 
 const {productValidator} = require('../utils/productValidator') ;
 const Orders = require('../models/orders');
 const { success } = require('toastr');
+
+
 
 const getLogin = async (req,res) => {
     res.render('admin/login')
@@ -149,6 +153,7 @@ const getAddProduct = async (req,res) => {
 const addProduct = async (req,res) => {
 
     try {
+
         const {name,category,price,description,quantity,size,colour} = req.body ; 
         // find the entered category from categoy collection
         const productCategory = await Category.findOne({name:category}) ;
@@ -163,9 +168,12 @@ const addProduct = async (req,res) => {
             throw new Error(errors) ;
         }
 
-        const imagePath = req.file.filename ;
+        let imagePaths = [] ;
+        req.files.forEach((file)=>{
+            imagePaths.push(file.filename) ;
+        })
 
-        if(!imagePath) {
+        if( imagePaths.length === 0 ) {
             throw new Error('product image is required ') ;
         }
 
@@ -178,7 +186,7 @@ const addProduct = async (req,res) => {
             quantity,
             size,
             colour,
-            image : imagePath,
+            image : imagePaths,
            
         })
 
@@ -187,7 +195,7 @@ const addProduct = async (req,res) => {
 
         console.log(addedProduct) ;
  
-        res.redirect('/admin/products/view') ;
+        return res.redirect('/admin/products/view') ;
 
     } catch (err) {
        

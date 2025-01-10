@@ -17,10 +17,12 @@ const cartItemSchema = new Schema({
         type : String,
         required : true
     },
-    image : {
-        type : String,
-        required : true
-    },
+    image : [
+        {
+            type : String,
+            required : true
+        }
+    ],
     size : {
         type : String ,
         required : true

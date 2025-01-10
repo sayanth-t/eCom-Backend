@@ -132,7 +132,7 @@
                                         <tbody>
                                             <% products.forEach(product => { %>
                                                 <tr>
-                                                    <td><img src="/product-images/<%= product.image %>" alt="" style="width: 100px; height: auto;"></td>
+                                                    <td><img src="/product-images/<%= product.image[0] %>" alt="" style="width: 100px; height: auto;"></td>
                                                     <td><%= product.name %></td>
                                                     <td><%= product.price %></td>
                                                     <td><%= product.category.name %></td>

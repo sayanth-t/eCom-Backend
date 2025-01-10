@@ -142,9 +142,7 @@
                                 <div class="dropdown-menu dropdown-menu-end nav-link-menu">
                                     <ul class="nav-list">
                                         <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-envelope"></i> Messages</a></li>
-                                        <li><a href="" class="dropdown-item"><i class="fas fa-cog"></i> Settings</a></li>
-                                        <div class="dropdown-divider"></div>
+                                        
                                         <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
                                 </div>
@@ -235,17 +233,15 @@
 
                                               <!-- upload image -->
                                             <div class="mb-3 row">
-                                                <label class="col-sm-2 form-label" for="image">Upload Image</label>
+                                                <label class="col-sm-2 form-label" for="image">Upload Images</label>
                                                 <div class="col-sm-10">
-                                                    <input type="file" name="image" id="imageUpload" class="form-control" accept="image/*" onchange="previewImage(event)">
+                                                    <input type="file" name="images" id="imageUpload" class="form-control" accept="image/*" onchange="previewImage(event)" multiple>
                                                 </div>
                                             </div>
                                             <!-- image preview -->
-                                            <div class="mb-3 row">
-                                                <label class="col-sm-2 form-label" id="previewLabel" style="display: none;">preview</label>
-                                                <div class="col-sm-10">
-                                                    
-                                                        <img id="preview" src="#" alt="Preview" style="width: 100px; height: auto ; display: none; ">
+                                            <div class="mb-3 row d-none" id="imgPreview">
+                                                <label class="col-sm-2 form-label " >Previews</label>
+                                                <div class="col-sm-10" id="previewContainer" style="display: flex; gap: 10px; flex-wrap: wrap;">
                                                     
                                                 </div>
                                             </div>
@@ -256,6 +252,7 @@
                                             </div>
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -270,22 +267,58 @@
     <!-- Toastr JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+   
     <script>
-
 
         //  to show image uploaded image preview
         function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
 
-                const output = document.getElementById('preview');
-                output.src = reader.result;
-                output.style.display = 'block' ;
-                document.getElementById('previewLabel').style.display = 'block' ;
-                
-            };
-            reader.readAsDataURL(event.target.files[0]);
+            const previewContainer = document.getElementById('imgPreview') ;
+
+            const files = Array.from(event.target.files);
+            const output = document.getElementById('previewContainer');
+
+            
+    
+            files.forEach((file,index)=>{ 
+
+                console.log(file) 
+
+                const reader = new FileReader();
+
+                reader.onload = function() {
+                    const imagePreview = document.createElement("div") ;
+                    const template = `
+                            <img id="preview" src="${reader.result}" alt="Preview" style="width: 100px; height: auto ; ">  
+                                 
+                      `
+
+                    imagePreview.innerHTML = template ;   
+                    output.appendChild(imagePreview) ;
+                    previewContainer.classList.remove('d-none') ;
+                };
+                reader.readAsDataURL(file);
+            }) ;
+            
         }
+
+        
+        // for uploading images
+        $('#addProductForm').submit( async function (e) {
+            e.preventDefault() ;
+            console.log('submit button clickedd') ;
+
+            const data = new FormData(e.target) ;
+
+            const files = e.target.imageUpload.files;
+
+            const response = await fetch('/admin/addProduct', {
+                    method: 'POST',
+                    body: data
+                });    
+        })
+
+        
     </script>
 
     <script src="/assets/vendor/jquery/jquery.min.js"></script>

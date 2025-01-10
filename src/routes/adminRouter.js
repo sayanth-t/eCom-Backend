@@ -4,20 +4,7 @@ const adminRouter = express() ;
 const adminController = require('../controller/adminController') ;
 
 const {adminAuth} = require('../middlewares/adminAuth') ;
-
-const multer  = require('multer') ;
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-      cb(null, './public/product-images') ;
-    },
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + file.originalname ;
-      cb(null, file.fieldname + '-' + uniqueSuffix) ;
-    }
-  })
-  
-  const upload = multer({ storage: storage }) ;
+const {imageUpload} = require('../middlewares/upload')
 
 
 // admin GET loginPage
@@ -38,7 +25,7 @@ adminRouter.get('/admin/products/view', adminAuth , adminController.getProducts 
 adminRouter.get('/admin/product/add', adminAuth , adminController.getAddProduct ) ;
 
 // post added products
-adminRouter.post('/admin/addProduct' ,adminAuth , upload.single('image') ,adminController.addProduct ) ;
+adminRouter.post('/admin/addProduct' ,adminAuth , imageUpload ,adminController.addProduct ) ;
 
 // delete product
 adminRouter.delete('/admin/product/delete/:productId' , adminAuth , adminController.deleteProduct )
@@ -56,7 +43,7 @@ adminRouter.delete('/admin/deleteCategory', adminAuth ,adminController.deleteCat
 adminRouter.get('/admin/product/edit/:productId', adminAuth ,adminController.getEditPage ) ;
 
 // post updated product data
-adminRouter.post('/admin/product/edit/:productId', adminAuth , upload.single('image')  , adminController.updateProduct )
+adminRouter.post('/admin/product/edit/:productId', adminAuth  , adminController.updateProduct )
 
 // GET form elements
 adminRouter.get('/admin/tables', adminAuth , adminController.getTables ) ;

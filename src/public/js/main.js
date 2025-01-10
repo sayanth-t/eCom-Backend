@@ -135,7 +135,20 @@
     $filter.each(function () {
         $filter.on('click', 'button', function () {
             var filterValue = $(this).attr('data-filter');
-            $topeContainer.isotope({filter: filterValue});
+
+            const showResult = document.querySelector('.showSearchProduct')  ;
+            const showProducts = document.querySelector('.showProducts') ;
+
+            showResult.classList.add('d-none') ;
+            showProducts.classList.remove('d-none') ;
+           
+            if( filterValue === "*" ){
+                $topeContainer.isotope({filter: "*"});
+            }
+            else{
+                $topeContainer.isotope({filter: `.${filterValue}`});
+            }
+            
         });
         
     });
