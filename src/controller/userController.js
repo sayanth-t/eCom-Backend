@@ -1135,20 +1135,63 @@ const searchProduct = async (req,res) => {
 
 const filterProduct = async (req,res) => {
     try {
-        const {colour} = req.body ;
+        const {colour,price,sort,category} = req.body ;
         
-        // find the products with entered colour
-        const products = await Products.find({
-            colour 
+        let sortingCategory ;
+        if( category !== "*" ) {
+            // find the category
+            sortingCategory = await Category.findOne({
+            name : category
         })
+        }
+
+        let sortingOrder ;
+        if( sort === "asc" ){
+            sortingOrder = 1 ;
+        }
+        if( sort === "desc" ){
+            sortingOrder = -1 ;
+        }
+
+        const pipeline = [] ;
+
+        if( colour || price ){
+            const common = { $match : { $or : [ 
+                { colour : colour},
+                { price : { $lt : +price }}
+             ] } } ;
+             pipeline.push(common) ;
+        }
+
+        // if sortinOrder is present
+        if(sortingOrder){
+            pipeline.push({ $sort : { price : sortingOrder }}) ;
+        }
+
+        // if category is present
+        if(sortingCategory){
+            pipeline.push({ $match : { category : sortingCategory._id }}) ;
+        }
+
+        const products = await Products.aggregate(pipeline) ;
+
+        console.log(products) ;
+
         if(products){
             res.json({
                 status : true,
                 products
             })
         }
+        else{
+            res.json({
+                status : false
+            })
+        }
     } catch (err) {
-        
+        res.json({
+            status : false
+        })
     }
 }
 
