@@ -210,15 +210,29 @@
                                 <div class="content">
                                     <div class="head">
                                         <h5 class="mb-0">Sales Overview</h5>
-                                        <p class="text-muted" >Current week sales data</p>
-                                        
+                                        <p class="text-muted">Current week sales data</p>
                                     </div>
-                                    <div class="canvas-wrapper" id="salesData" >
+                                    
+                                    <!-- Date selection section -->
+                                    <form id="dateSelection">
+                                        <div class="date-selection" >
+                                            
+                                            <label for="startDate">Start Date:</label>
+                                            <input type="date" id="startDate" name="startDate">
+                                            
+                                            <label for="endDate">End Date:</label>
+                                            <input type="date" id="endDate" name="endDate">
+                                            
+                                            <button type="submit" id="applyDateRange" class="btn btn-primary">Apply Date Range</button>
+                                        </div>
+                                    </form>
+                                    <div class="canvas-wrapper" id="salesData">
                                         <canvas class="chart" id="salesFlow"></canvas>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        
 
                     </div>
                     <div class="row">
@@ -437,13 +451,17 @@
         const sales ="<%= JSON.stringify(lastWeekSales) %>" ;
         const lastWeekSales = JSON.parse(sales) ;
 
-        console.log(lastWeekSales) ;
-        console.log(typeof(lastWeekSales))
+        const days = "<%= lastWeekDays %>" ;
+        const lastWeekDays = days.split(',') ;
+        console.log(lastWeekDays)
+        
         // new 
-        var myChart1 = new Chart(trafficchart, {
+        let myChart1 
+        
+        myChart1 = new  Chart(trafficchart, {
         type: 'line',
         data: {
-            labels: ['Jan1','Jan2','Jan3','Jan4','Jan5','Jan6','Jan7'],
+            labels: lastWeekDays  ,
             datasets: [{
 
                 data: lastWeekSales ,
@@ -451,6 +469,7 @@
                 borderColor: "rgba(48, 164, 255, 0.8)",
                 fill: true,
                 borderWidth: 1
+
             }]
         },
         options: {
@@ -472,38 +491,52 @@
         }
         });
 
-        // new
-        var myChart2 = new Chart(saleschart, {
-        type: 'bar',
-        data: {
-            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            datasets: [{
-                    label: 'Income',
-                    data: ["280", "300", "400", "600", "450", "400", "500", "550", "450", "650", "950", "1000"],
-                    backgroundColor: "rgba(76, 175, 80, 0.5)",
-                    borderColor: "#6da252",
-                    borderWidth: 1,
-            }]
-        },
-        options: {
-            animation: {
-                duration: 2000,
-                easing: 'easeOutQuart',
-            },
-            plugins: {
-                legend: {
-                    display: false,
-                    position: 'top',
-                },
-                title: {
-                    display: true,
-                    text: 'Number of Sales',
-                    position: 'left',
-                },
-            },
-        }
-        });
+        // when date duration is selected
+        $("#dateSelection").submit((e)=>{
+            e.preventDefault() ;
+            const formData =  $("#dateSelection").serialize() ;
+            
+            // making an ajax request 
+            $.ajax({
+                url : '/admin/sales-chart',
+                data : formData ,
+                method : 'post' ,
+                success : (response) => {
+                    myChart1 = new  Chart(trafficchart, {
+                    type: 'line',
+                    data: {
+                        labels: response.dayDuration  ,
+                        datasets: [{
 
+                            data: response.sales ,
+                            backgroundColor: "rgba(48, 164, 255, 0.2)",
+                            borderColor: "rgba(48, 164, 255, 0.8)",
+                            fill: true,
+                            borderWidth: 1
+
+                        }]
+                    },
+                    options: {
+                        animation: {
+                            duration: 2000,
+                            easing: 'easeOutQuart',
+                        },
+                        plugins: {
+                            legend: {
+                                display: false,
+                                position: 'right',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Number of sales',
+                                position: 'left',
+                            },
+                        },
+                    }
+                    });
+                } 
+            })
+        })
      </script>
 
     <script src="/assets/vendor/jquery/jquery.min.js"></script>

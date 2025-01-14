@@ -9,6 +9,7 @@ const Wishlist = require('../models/wishlist')
 const Coupon = require('../models/coupon') ;
 const Category = require('../models/category') ;
 const { ObjectId } = require('mongoose').Types;
+const Banner = require('../models/banner') ;
 
 const crypto = require('crypto') ;
 
@@ -48,8 +49,8 @@ const getHome = async (req,res) => {
                                     .find({}) 
                                     .populate('category') 
                                 
-        
-        res.render('user/home',{products,cartProductCount,isUserLoggedin,orderCount,wishlistProductCount}) ;
+        const banners = await Banner.find() ;
+        res.render('user/home',{products,cartProductCount,isUserLoggedin,orderCount,wishlistProductCount , banners }) ;
 
     } catch (err) {
         console.log('error while getting home page', err.message)
@@ -476,13 +477,14 @@ const login = async (req,res) => {
        
         const {token} = req.cookies  ;
         if(token) {
-         
                 await jwt.verify(token, process.env.JWT_PRIVATEKEY) ;
                 return res.redirect('/') ;
-          
         }
 
         const {emailId,password,confirmPassword} = req.body ;
+        if(password !== confirmPassword){
+            throw new Error('passwords do not match')
+        }
         console.log(req.body)
         
         // checking with the entered emailId 
@@ -495,8 +497,8 @@ const login = async (req,res) => {
             throw new Error('user is not verified!') ;
         }
 
-        if(password !== confirmPassword){
-            throw new Error('passwords do not match')
+        if( user.isBlocked === true ){
+            throw new Error('user is blocked!') ;
         }
 
         // checking the entered password match to hashed password
@@ -1177,7 +1179,7 @@ const filterProduct = async (req,res) => {
 
         console.log(products) ;
 
-        if(products){
+        if(products.length > 0){
             res.json({
                 status : true,
                 products

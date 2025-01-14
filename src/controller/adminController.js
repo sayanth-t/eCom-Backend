@@ -2,18 +2,15 @@ const Products = require('../models/products') ;
 const Category = require('../models/category') ;
 const Coupon = require('../models/coupon') ;
 const Admin = require('../models/admin') ;
-const Users = require('../models/users')
-
-
+const Users = require('../models/users') ;
+const Banner = require('../models/banner') ;
 
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
 
 const {productValidator} = require('../utils/productValidator') ;
 const Orders = require('../models/orders');
-const { success } = require('toastr');
-
-
+const { success } = require('toastr') ;
 
 const getLogin = async (req,res) => {
     res.render('admin/login')
@@ -63,8 +60,10 @@ const logout = async (req,res) => {
 const getDashboard = async (req,res) =>{
    try {
     const admin = req.admin ;
-    let oneWeekAgo = new Date();
+
+    let oneWeekAgo = new Date() ;
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Get the date 7 days ago
+    
 
     // for find total orders in last week
     const ordersCount = await Orders.aggregate([
@@ -87,19 +86,53 @@ const getDashboard = async (req,res) =>{
     // for creating chart
     const ordersPerDay = await Orders.aggregate([
         { $match : { date : { $gte : oneWeekAgo }}},
-        { $group : { _id : "$date" ,
+        { $group : { _id : { $dateToString: { format: "%Y-%m-%d", date: "$date" } } , 
             totalSales : { $sum : 1 }
         }},
         { $sort : { _id : 1 }}
     ])
+
+    // for comparing change to y-m-d format of last week days
+    const dateRange = (startDate) => {
+        const dateRange = [];
+        let currentDate = new Date(startDate);
+        for (let i = 1 ; i <= 7 ; i++) {
+            
+            currentDate.setDate(currentDate.getDate() + 1);
+            const dateString = currentDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+            dateRange.push(dateString);
+
+        }
+        return dateRange;
+    };
+    
+    const days = dateRange(oneWeekAgo) ;
     
     let lastWeekSales = [] ;
+    let lastWeekDays = [] ;
 
-    ordersPerDay.forEach( sale => {
-        lastWeekSales.push(sale.totalSales)
+    // for getting Y axis values
+    days.forEach( day => {
+        
+        // check sales is done in that day
+        const saleDone = ordersPerDay.find(sale=> sale._id === day) ;
+        if(saleDone){
+            lastWeekSales.push(saleDone.totalSales) ;
+        }
+        else{
+            lastWeekSales.push(0) ;
+        }
+
+        const dayNumber = new Date(day).getDate() ;
+        const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
+            "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+        ];
+        const month = monthNames[new Date(day).getMonth()] ; 
+
+        lastWeekDays.push( month + ' ' +  dayNumber  ) ;
     })
 
-    console.log(lastWeekSales) ;
+  
 
     // find top orders by country
     // const countries  = await Orders.aggregate([
@@ -113,7 +146,7 @@ const getDashboard = async (req,res) =>{
     // ])
     // console.log(countries) ;
 
-    res.render('admin/dashboard',  { admin , lastWeekSales , lasteWeekOrderCount , lastWeekRevenue }) ;
+    res.render('admin/dashboard',  { admin , lastWeekSales , lasteWeekOrderCount , lastWeekRevenue , lastWeekDays }) ;
    } catch (err) {
     console.log(err.message)
    }
@@ -137,12 +170,12 @@ const getProducts = async (req,res) => {
 
 const getAddProduct = async (req,res) => {
     try {
-
+        const admin = req.admin ;
         const categories = await Category
                                 .find({}) 
                                 
         
-        res.render('admin/addProduct' , {categories} ) ;
+        res.render('admin/addProduct' , {categories,admin} ) ;
         
        
     } catch (err) {
@@ -194,8 +227,9 @@ const addProduct = async (req,res) => {
         const addedProduct =  await newProduct.save() ;
 
         console.log(addedProduct) ;
+        console.log('product is added successfully')
  
-        return res.redirect('/admin/products/view') ;
+        res.redirect('/admin/products/view') ;
 
     } catch (err) {
        
@@ -493,7 +527,214 @@ const deleteCoupon = async (req,res) => {
     }
 }
 
+// get all banners
+const getBanners = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        const banners = await Banner.find() ;
+        res.render('admin/banners' ,{ admin , banners })
+    } catch (err) {
+        
+    }
+}
 
+// get banner edit page
+const getBannerCreate = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        
+        res.render('admin/addBanner',{admin}) ;
+    } catch (err) {
+        
+    }
+}
+
+// creating new banner
+const addBanner = async (req,res) => {
+    try {
+       const {title,subTitle} = req.body ;
+       const bannerImage = req.file.filename ;
+
+       const banner = new Banner({
+            title ,
+            subTitle,
+            image : bannerImage
+       })
+      
+       await banner.save() ;
+       res.redirect('/admin/banner/view') ;
+
+    } catch (err) {
+        
+    }
+}
+
+// get baner edit page
+const getBannerEdit = async (req,res) => {
+    try {
+        const {bannerId} = req.params ;
+        const banner = await Banner.findById(bannerId) ;
+
+        res.render('admin/editBanner',{banner}) ;
+    } catch (err) {
+        console.log(err.message) ;
+    }
+}
+
+// edit banner
+const editBanner = async (req,res) => {
+    try {
+        const {title,subTitle} = req.body ;
+        const bannerImage = req.file.filename ;
+        const {bannerId} = req.params ;
+
+        // updating banner
+        await Banner.findByIdAndUpdate(bannerId,{
+            title,
+            subTitle,
+            image : bannerImage
+        })
+
+        res.redirect('/admin/banner/view') ;
+
+    } catch (err) {
+        
+    }
+}
+
+// delete banner
+const deleteBanner = async (req,res) => {
+    try {
+        
+        const {bannerId} = req.params ;
+
+        // deleting the banner
+        await Banner.findByIdAndDelete(bannerId) ;
+        res.json({
+            bannerDelete : true
+        })
+    } catch (err) {
+        console.log(err.message)
+        res.json({
+            bannerDelete : false
+        })
+    }
+}
+
+// get orders
+const getOrders = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        const orders = await Orders.find()
+                                   .populate('address',['country','state','address','city','pinNo','-_id'])
+                                   .populate('userId')
+                                   .populate('products')
+                                   
+        console.log(orders ) ;                           
+        res.render('admin/orders',{orders,admin})
+    } catch (err) {
+        
+    }
+}
+
+// to change order status 
+const changeOrderStatus = async (req,res) => {
+    try {
+        const {orderId} = req.params ;
+        const {status} = req.body ;
+       
+        // updating the order status 
+        await Orders.findByIdAndUpdate(orderId,{ status }) ;
+
+        res.json({
+            statusChanged : true
+        })
+
+    } catch (err) {
+        res.json({
+            statusChanged : false
+        })
+    }
+}
+
+// change time duration 
+const salesChart = async (req,res) => {
+    try {
+        const {startDate,endDate} = req.body ;
+
+        const start = new Date(startDate) ;
+        const end = new Date(endDate) ;
+        
+         // for creating chart
+        const ordersPerDay = await Orders.aggregate([
+            { $match : { date : { $gte: start, $lte: end } }},
+            { $group : { _id : { $dateToString: { format: "%Y-%m-%d", date: "$date" } } , 
+                totalSales : { $sum : 1 }
+            }},
+            { $sort : { _id : 1 }}
+        ])
+        
+        // for comparing change to y-m-d format of last week days
+        const dateRange = (start,end) => {
+            const dateRange = [];
+
+            const startDate = new Date(start) ;
+            const endDate = new Date(end) ; 
+            const dayDifference = ( endDate - startDate ) / (1000 * 60 * 60 * 24);
+
+            if(dayDifference<0){
+                throw new Error("Enter proper time duration ") ;
+            }
+
+            for (let i = 0 ; i <= dayDifference ; i++) {
+                const currentDate = new Date(startDate)
+                currentDate.setDate( currentDate.getDate() + i );
+                const dateString = currentDate.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+                dateRange.push(dateString);
+                
+            }
+            return dateRange;
+        };
+        
+        const days = dateRange(startDate,endDate) ;
+        
+        let sales = [] ;
+        let dayDuration = [] ;
+
+        // for getting Y and X axis values
+        days.forEach( day => {
+            
+            // check sales is done in that day
+            const saleDone = ordersPerDay.find(sale=> sale._id === day) ;
+            if(saleDone){
+                sales.push(saleDone.totalSales) ;
+            }
+            else{
+                sales.push(0) ;
+            }
+
+            const dayNumber = new Date(day).getDate() ;
+            const monthNames = ["Jan", "Feb", "March", "April", "May", "June",
+                "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+            ];
+            const month = monthNames[new Date(day).getMonth()] ; 
+
+            dayDuration.push( month + ' ' +  dayNumber ) ;
+        })
+
+        res.json({
+            changeDays : true ,
+            sales , 
+            dayDuration
+        })
+
+       
+    } catch (err) {
+        res.status(400).json({
+            message : err.message
+        })
+    }
+}
 
 module.exports = {getDashboard,
                   getProducts ,
@@ -517,5 +758,14 @@ module.exports = {getDashboard,
                   getCouponEdit ,
                   updateCoupon ,
                   deleteCoupon,
-                  blockUser
+                  blockUser ,
+                  getBanners ,
+                  getBannerCreate ,
+                  addBanner,
+                  getBannerEdit,
+                  editBanner,
+                  deleteBanner,
+                  getOrders,
+                  changeOrderStatus,
+                  salesChart
                 } 

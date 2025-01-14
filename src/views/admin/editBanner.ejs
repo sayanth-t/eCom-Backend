@@ -11,13 +11,18 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Users | Bootstrap Simple Admin Template</title>
+    <title>Forms | Bootstrap Simple Admin Template</title>
     <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
     <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
     <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/assets/vendor/datatables/datatables.min.css" rel="stylesheet">
     <link href="/assets/css/master.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 </head>
 
 <body>
@@ -25,9 +30,9 @@
         <!-- sidebar navigation component -->
         <nav id="sidebar" class="active">
             <div class="sidebar-header">
-                <img src="thrayiLogo/thrayi-logo.png" alt="bootraper logo" class="app-logo">
+                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
             </div>
-
+            
             <!-- side bar -->
             <ul class="list-unstyled components text-secondary">
 
@@ -62,6 +67,7 @@
                 </li>
         
             </ul>
+
 
         </nav>
         <!-- end of sidebar component -->
@@ -99,7 +105,7 @@
                                 <div class="dropdown-menu dropdown-menu-end nav-link-menu">
                                     <ul class="nav-list">
                                         <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
-                                       
+                                      
                                         <li><a href="" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
                                     </ul>
                                 </div>
@@ -111,97 +117,107 @@
             <!-- end of navbar navigation -->
             <div class="content">
                 <div class="container">
-                    <div class="page-title">
-                        <h3>Users
-                            <a href="roles.html" class="btn btn-sm btn-outline-primary float-end"><i class="fas fa-user-shield"></i> Roles</a>
-                        </h3>
-                    </div>
-                    <div class="box box-primary">
-                        <div class="box-body">
-                            <table width="100%" class="table table-hover" id="dataTables-example">
-                                <thead>
-                                    <tr>
-                                        <th>Profle Image</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>PhoneNumber</th>
-                                        <th>address</th>
+                    
+                    <div class="row">
+
+                        <!-- form for add new coupon -->
+                
+                        <div class="col-lg-12 mt-5">
+                            <div class="card">
+                                <div class="card-header">Enter new Banner details</div>
+                                <div class="card-body">
                                     
-                                    </tr>
-                                </thead>
-                                <tbody>
+                                    <form id="addCouponForm" action="/admin/banner/edit/<%= banner.id %>" method="post"  enctype="multipart/form-data" accept-charset="utf-8 mt-5">
 
-                                    <% users.forEach(user => { %>
-                                        <tr>
-                                            <td><img src="/users-images/<%= user.image %>"  alt="" class="profile-image"></td>
-                                            <td><%= user.name %></td>
-                                            <td><%= user.emailId %></td>
-                                            <td><%= user.phoneNumber %></td>
-                                            <td><% if (user.address) { %>
-                                             <p><%= user.address.country %> , <%= user.address.state %></p>
-                                             <p><%= user.address.address %> , <%= user.address.city %></p>
-                                             
-                                            <% } %></td>
-                                            <td class="text-end">
+                                        <!-- for setting req.type as banner -->
+                                        <input type="hidden" name="type" value="banner">
 
-                                                <a onclick="blockUser('<%= user._id %>')" class="btn btn-outline-warning btn-rounded befor-clicked " >
-
-                                                    <% if (user.isBlocked) { %>
-                                                        <!-- unblock icon -->
-                                                        <i class="fas fa-unlock unblock" data-id="<%= user._id %>" ></i>
-                                                    <% } else { %>
-                                                        <!-- block icon -->
-                                                        <i class="fas fa-ban block" data-id="<%= user._id %>" ></i>
-                                                    <% } %>         
-                                                    
-                                                </a>
-
+                                        <!-- banner title -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label" for="email">Title</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="title" value="<%= banner.title %>" class="form-control">
                                                 
-                                            </td>
-                                        </tr>
-                                    <% }) %>
-                                    
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </div>
+                                        <!-- banner sub title -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label">Sub Title</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="subTitle" value="<%= banner.subTitle %>" class="form-control">
+                                                
+                                            </div>
+                                        </div>
+             
+                                        <!-- Image -->
+                                        <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="password">Banner Image</label>
+                                                <div class="col-sm-10">
+                                                    <input type="file" name="bannerImage"  placeholder="image" class="form-control" onchange="previewImage(event)">
+                                                    
+                                                </div>
+                                        </div>
+                                        <!-- image preview -->
+                                        <div class="mb-3 row d-none" id="imgPreview">
+                                            <label class="col-sm-2 form-label " >Preview</label>
+                                            <div class="col-sm-10" id="previewContainer" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                            </div>
+                                        </div>
+                                          
+
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-10 offset-sm-2 mt-3">
+                                                <input type="submit" class="btn btn-primary">
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
                         </div>
+
+
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
-             // for block user
-            function blockUser (userId) {
+   <script>
+     //  to show image uploaded image preview
+     function previewImage(event) {
 
-                const iconElement = document.querySelector(`i[data-id="${userId}"]`);
-                
-                
-                    $.ajax({
-                        url : `/admin/user/block/${userId}` ,
-                        method : 'post' ,
-                        success : (response) => {
-                            
-                            if(response.blocked){
-                                iconElement.classList.remove('fa-ban','block');
-                                iconElement.classList.add('fa-unlock','unblock');
-                            }
-                            else{
-                                iconElement.classList.remove('fa-unlock','unblock');
-                                iconElement.classList.add('fa-ban','block');
-                               
-                            }
-                            console.log(iconElement)
-                        }
-                    })
-                }
+    const previewContainer = document.getElementById('imgPreview') ;
 
-    </script>
+    const files = Array.from(event.target.files);
+    const output = document.getElementById('previewContainer');
+
+    output.innerHTML = "" ;
+    
+    files.forEach((file,index)=>{ 
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const imagePreview = document.createElement("div") ;
+            const template = `
+                    <img id="preview" src="${reader.result}" alt="Preview" style="width: 100px; height: auto ; ">       
+            `
+            imagePreview.innerHTML = template ;   
+            output.appendChild(imagePreview) ;
+            previewContainer.classList.remove('d-none') ;
+        };
+        reader.readAsDataURL(file);
+    }) ;
+
+    }
+   </script>
+
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="/assets/vendor/datatables/datatables.min.js"></script>
-    <script src="/assets/js/initiate-datatables.js"></script>
+    <script src="/assets/js/form-validator.js"></script>
     <script src="/assets/js/script.js"></script>
 </body>
 

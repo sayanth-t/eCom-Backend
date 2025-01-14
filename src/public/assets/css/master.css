@@ -4,6 +4,7 @@
 * Author: Alexis Luna
 * Website: https://github.com/pro-dev-ph/bootstrap-simple-admin-template
 -------------------------------------------------------------------*/
+/*  style for date entering section */
 
 @import "../components/navbar/navbar-dropdowns.css";
 @import "../components/sidebar/sidebar-default.css";
@@ -811,4 +812,61 @@ table.dataTable>tbody>tr.child ul.dtr-details {
         -ms-flex-direction: row;
         flex-direction: row;
     }
+}
+
+
+/* Style for the date-selection section */
+.date-selection {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    padding: 30px;
+    /* background-color: #f8f9fa; */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    column-gap: 10px;
+}
+
+/* Style labels */
+.date-selection label {
+    display: block;
+    
+    font-weight: bold;
+    color: #495057; /* Darker text color for labels */
+}
+
+/* Style the input fields */
+.date-selection input[type="date"] {
+    width: 25%;
+    padding: 10px;
+   
+    border: 1px solid #ced4da;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Style for the button */
+.date-selection button {
+    display: block;
+    width: 25%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Button hover effect */
+.date-selection button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Optional: If you want a little margin on the bottom */
+.date-selection .form-control {
+    margin-bottom: 15px;
 }

@@ -4,7 +4,7 @@ const adminRouter = express() ;
 const adminController = require('../controller/adminController') ;
 
 const {adminAuth} = require('../middlewares/adminAuth') ;
-const {imageUpload} = require('../middlewares/upload')
+const {upload} = require('../middlewares/upload')
 
 
 // admin GET loginPage
@@ -16,7 +16,11 @@ adminRouter.post('/admin/login',adminController.login ) ;
 // admin logout
 adminRouter.get('/admin/logout' , adminController.logout )
 
+// get dashboard
 adminRouter.get('/admin', adminAuth ,  adminController.getDashboard ) ;
+
+// change time duration
+adminRouter.post('/admin/sales-chart',adminAuth, adminController.salesChart ) ;
 
 // view all products
 adminRouter.get('/admin/products/view', adminAuth , adminController.getProducts ) ;
@@ -25,7 +29,7 @@ adminRouter.get('/admin/products/view', adminAuth , adminController.getProducts 
 adminRouter.get('/admin/product/add', adminAuth , adminController.getAddProduct ) ;
 
 // post added products
-adminRouter.post('/admin/addProduct' ,adminAuth , imageUpload ,adminController.addProduct ) ;
+adminRouter.post('/admin/addProduct' ,adminAuth , upload.array('images',3) ,adminController.addProduct ) ;
 
 // delete product
 adminRouter.delete('/admin/product/delete/:productId' , adminAuth , adminController.deleteProduct )
@@ -73,8 +77,31 @@ adminRouter.delete('/admin/coupon/delete/:couponId',adminAuth,adminController.de
 adminRouter.get('/admin/user/view',adminAuth,adminController.getUsers ) ;
 
 // block user
-adminRouter.post('/admin/user/block/:userId',adminAuth, adminController.blockUser )
+adminRouter.post('/admin/user/block/:userId',adminAuth, adminController.blockUser ) ;
 
+// view banners
+adminRouter.get('/admin/banner/view',adminAuth,adminController.getBanners ) ;
+
+// get banner create page
+adminRouter.get('/admin/banner/create',adminAuth,adminController.getBannerCreate ) ;
+
+// post entered banner data
+adminRouter.post('/admin/banner/create',adminAuth , upload.single('bannerImage') ,adminController.addBanner ) ;
+
+// get banner edit page
+adminRouter.get('/admin/banner/edit/:bannerId',adminAuth,adminController.getBannerEdit ) ;
+
+// edit banner
+adminRouter.post('/admin/banner/edit/:bannerId',adminAuth,  upload.single('bannerImage')  , adminController.editBanner ) ;
+
+// delete Banner
+adminRouter.delete('/admin/banner/delete/:bannerId',adminAuth,adminController.deleteBanner ) ;
+
+// get orders
+adminRouter.get('/admin/order/view',adminAuth,adminController.getOrders ) ; 
+
+// update order status
+adminRouter.patch('/admin/order/change-status/:orderId',adminAuth,adminController.changeOrderStatus ) ;
 
 
 module.exports = {adminRouter}

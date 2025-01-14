@@ -1,0 +1,209 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Forms | Bootstrap Simple Admin Template</title>
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- sidebar navigation component -->
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
+            </div>
+            
+            <!-- side bar -->
+            <ul class="list-unstyled components text-secondary">
+
+                <!-- dashboard -->
+                <li>
+                    <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                <!-- products -->
+                <li>
+                    <a href="/admin/products/view"><i class="fas fa-file-alt"></i>Products</a>
+                </li>
+
+                <!-- users -->
+                <li>
+                    <a href="/admin/user/view"><i class="fas fa-user-friends"></i>Users</a>
+                </li>
+
+                <!-- orders -->
+                <li>
+                    <a href="/admin/order/view"><i class="fas fa-chart-bar"></i>Orders</a>
+                </li>
+
+                <!-- coupons -->
+                <li>
+                    <a href="/admin/coupon/view"><i class="fas fa-table"></i>Coupons </a>
+                </li>
+
+                <!-- banners -->
+                <li>
+                    <a href="/admin/banner/view"><i class="fas fa-icons"></i>Banners</a>
+                </li>
+        
+            </ul>
+
+
+        </nav>
+        <!-- end of sidebar component -->
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span><%= admin.name %></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                       
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/admin/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+            <div class="content">
+                <div class="container">
+                    
+                    <div class="row">
+
+                        <!-- form for add new coupon -->
+                
+                        <div class="col-lg-12 mt-5">
+                            <div class="card">
+                                <div class="card-header">Enter new Banner details</div>
+                                <div class="card-body">
+                                    
+                                    <form id="addCouponForm" action="/admin/banner/create" method="post"  enctype="multipart/form-data" accept-charset="utf-8 mt-5">
+
+                                        <!-- for setting req.type as banner -->
+                                        <input type="hidden" name="type" value="banner">
+
+                                        <!-- banner title -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label" for="email">Title</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="title" placeholder="Banner Title" class="form-control">
+                                                
+                                            </div>
+                                        </div>
+                                        <!-- banner sub title -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label">Sub Title</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="subTitle" placeholder="Sub title" class="form-control">
+                                                
+                                            </div>
+                                        </div>
+             
+                                        <!-- Image -->
+                                        <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="password">Banner Image</label>
+                                                <div class="col-sm-10">
+                                                    <input type="file" name="bannerImage"  placeholder="image" class="form-control" onchange="previewImage(event)">
+                                                    
+                                                </div>
+                                        </div>
+                                        <!-- image preview -->
+                                        <div class="mb-3 row d-none" id="imgPreview">
+                                            <label class="col-sm-2 form-label " >Preview</label>
+                                            <div class="col-sm-10" id="previewContainer" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                            </div>
+                                        </div>
+                                          
+
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-10 offset-sm-2 mt-3">
+                                                <input type="submit" class="btn btn-primary">
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+   <script>
+     //  to show image uploaded image preview
+     function previewImage(event) {
+
+    const previewContainer = document.getElementById('imgPreview') ;
+
+    const files = Array.from(event.target.files);
+    const output = document.getElementById('previewContainer');
+
+
+    files.forEach((file,index)=>{ 
+        const reader = new FileReader();
+
+        reader.onload = function() {
+            const imagePreview = document.createElement("div") ;
+            const template = `
+                    <img id="preview" src="${reader.result}" alt="Preview" style="width: 100px; height: auto ; ">       
+            `
+            imagePreview.innerHTML = template ;   
+            output.appendChild(imagePreview) ;
+            previewContainer.classList.remove('d-none') ;
+        };
+        reader.readAsDataURL(file);
+    }) ;
+
+    }
+   </script>
+
+    <script src="/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/form-validator.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+
+</html>
