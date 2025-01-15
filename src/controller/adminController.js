@@ -132,19 +132,7 @@ const getDashboard = async (req,res) =>{
         lastWeekDays.push( month + ' ' +  dayNumber  ) ;
     })
 
-  
 
-    // find top orders by country
-    // const countries  = await Orders.aggregate([
-    //     { $match : { date : { $gte : oneWeekAgo }}},
-    //     { $lookup : {
-    //         from : "Address" ,
-    //         localField : "address" ,
-    //         foreignField : "_id" ,
-    //         as : "addressDetails"
-    //     }}
-    // ])
-    // console.log(countries) ;
 
     res.render('admin/dashboard',  { admin , lastWeekSales , lasteWeekOrderCount , lastWeekRevenue , lastWeekDays }) ;
    } catch (err) {
@@ -233,7 +221,10 @@ const addProduct = async (req,res) => {
 
     } catch (err) {
        
-        console.log('something went wrong!'+err.message) ;
+        res.json({
+            err : true ,
+            message : err.message
+        })
     }
 }
 
@@ -664,6 +655,27 @@ const salesChart = async (req,res) => {
 
         const start = new Date(startDate) ;
         const end = new Date(endDate) ;
+
+        if( start >= end ){
+            throw new Error('enter proper date range') ;
+        }
+        // for find total orders in last week
+        const ordersCount = await Orders.aggregate([
+            { $match : { date : { $gte: start, $lte: end }}},
+            { $group : { _id : null  ,
+                totalOrders : { $sum : 1 }
+            }}
+        ])
+        const orders = ordersCount[0].totalOrders ;
+
+        // for finding total revanue
+        const revenue = await Orders.aggregate([
+            { $match : { date : { $gte: start, $lte: end }}},
+            { $group : { _id : null  ,
+                totalRevenue : { $sum : "$totalAmount" }
+            }}
+        ])
+        const profit = revenue[0].totalRevenue ;
         
          // for creating chart
         const ordersPerDay = await Orders.aggregate([
@@ -682,7 +694,7 @@ const salesChart = async (req,res) => {
             const endDate = new Date(end) ; 
             const dayDifference = ( endDate - startDate ) / (1000 * 60 * 60 * 24);
 
-            if(dayDifference<0){
+            if( dayDifference <= 0 ){
                 throw new Error("Enter proper time duration ") ;
             }
 
@@ -722,10 +734,17 @@ const salesChart = async (req,res) => {
             dayDuration.push( month + ' ' +  dayNumber ) ;
         })
 
+        console.log('sales : ',sales) ;
+        console.log('days : ',dayDuration) ;
+
         res.json({
             changeDays : true ,
             sales , 
-            dayDuration
+            dayDuration,
+            orders,
+            profit,
+            startDate,
+            endDate
         })
 
        

@@ -18,6 +18,7 @@
     <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/assets/css/master.css" rel="stylesheet">
     <link href="/assets/vendor/flagiconcss/css/flag-icon.min.css" rel="stylesheet">
+   
 </head>
 
 <body>
@@ -103,6 +104,28 @@
                         </div>
                     </div>
                     <div class="row">
+
+                        <!-- date range selection -->
+                        <div class="col-sm-6 col-md-6 col-lg-12 mt-3">
+                            <div class="card">
+                                <div class="content">
+                                     <!-- Date selection section -->
+                                     <form id="dateSelection">
+                                        <div class="date-selection" >
+                                            
+                                            <label for="startDate">Start Date:</label>
+                                            <input type="date" id="startDate" name="startDate">
+                                            
+                                            <label for="endDate">End Date:</label>
+                                            <input type="date" id="endDate" name="endDate">
+                                            
+                                            <button type="submit" id="applyDateRange" class="btn btn-primary">Apply Date Range</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- new orders card -->
                         <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                             <div class="card">
                                 <div class="content">
@@ -115,19 +138,20 @@
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">New Orders</p>
-                                                <span class="number"><%= lasteWeekOrderCount  %></span>
+                                                <span class="number" id="ordersCount"><%= lasteWeekOrderCount  %></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
-                                        <div class="stats">
+                                        <div class="stats " id="dateDuration1">
                                             <i class="fas fa-calendar"></i> For this Week
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- revenue card -->
                         <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                             <div class="card">
                                 <div class="content">
@@ -140,19 +164,21 @@
                                         <div class="col-sm-8">
                                             <div class="detail">
                                                 <p class="detail-subtitle">Revenue</p>
-                                                <span class="number"><%= lastWeekRevenue %></span>
+                                                <span class="number" id="revenue"><%= lastWeekRevenue %></span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer">
                                         <hr />
-                                        <div class="stats">
-                                            <i class="fas fa-calendar"></i> For this Week
+                                        <div class="stats" id="dateDuration2" >
+                                            <i class="fas fa-calendar" ></i> For this Week
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
+
+                        
                         <!-- <div class="col-sm-6 col-md-6 col-lg-3 mt-3">
                             <div class="card">
                                 <div class="content">
@@ -205,27 +231,14 @@
                         </div> -->
                    
                         <!-- sales overview chart -->
-                        <div class="col-md-6 col-lg-10">
+                        <div class="col-md-6 col-lg-12">
                             <div class="card">
                                 <div class="content">
                                     <div class="head">
                                         <h5 class="mb-0">Sales Overview</h5>
-                                        <p class="text-muted">Current week sales data</p>
+                                        <p class="text-muted mt-3" id="dateDuration">Current week sales data</p>
                                     </div>
-                                    
-                                    <!-- Date selection section -->
-                                    <form id="dateSelection">
-                                        <div class="date-selection" >
-                                            
-                                            <label for="startDate">Start Date:</label>
-                                            <input type="date" id="startDate" name="startDate">
-                                            
-                                            <label for="endDate">End Date:</label>
-                                            <input type="date" id="endDate" name="endDate">
-                                            
-                                            <button type="submit" id="applyDateRange" class="btn btn-primary">Apply Date Range</button>
-                                        </div>
-                                    </form>
+   
                                     <div class="canvas-wrapper" id="salesData">
                                         <canvas class="chart" id="salesFlow"></canvas>
                                     </div>
@@ -257,7 +270,7 @@
                                 </div> -->
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <!-- <div class="col-md-6">
                             <div class="card">
                                 <div class="content">
                                     <div class="head">
@@ -380,9 +393,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="col-sm-6 col-md-6 col-lg-3">
                             <div class="card">
                                 <div class="content">
@@ -435,14 +448,18 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
     </div>
 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <!-- for adding chart -->
      <script>
         var trafficchart = document.getElementById("salesFlow");
@@ -491,6 +508,14 @@
         }
         });
 
+        const ordersCount = document.getElementById('ordersCount') ;
+        const profit = document.getElementById('revenue') ;
+
+        const dateDuration = document.getElementById('dateDuration') ;
+        const dateDuration1 = document.getElementById('dateDuration1') ;
+        const dateDuration2 = document.getElementById('dateDuration2') ;
+    
+
         // when date duration is selected
         $("#dateSelection").submit((e)=>{
             e.preventDefault() ;
@@ -502,6 +527,18 @@
                 data : formData ,
                 method : 'post' ,
                 success : (response) => {
+
+                    dateDuration.innerHTML = `${response.startDate} to ${response.endDate}` ;
+                    dateDuration1.innerHTML = `${response.startDate} to ${response.endDate}`
+                    dateDuration2.innerHTML = `${response.startDate} to ${response.endDate}` 
+                    // changing the ordersCount and profit
+                    ordersCount.innerHTML = response.orders ;
+                    profit.innerHTML = response.profit ;
+
+                    // destroy chart is exist
+                    if(myChart1) {
+                        myChart1.destroy();
+                    }
                     myChart1 = new  Chart(trafficchart, {
                     type: 'line',
                     data: {
@@ -534,6 +571,9 @@
                         },
                     }
                     });
+                } ,
+                error : (xhr) => {
+                    toastr.info(xhr.responseJSON.message)
                 } 
             })
         })

@@ -42,7 +42,12 @@ const cartItemSchema = new Schema({
     total : {
         type : Number ,
         required : true
+    },
+    isPlaced : {
+        type : Boolean ,
+        default : false
     }
+    
 }, { timestamps: true }) ;
 
 

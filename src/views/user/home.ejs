@@ -416,7 +416,7 @@
 
 			<!-- Load more -->
 			<div class="flex-c-m flex-w w-full p-t-45"  >
-				<a href="#" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
+				<a id="loadMore" class="flex-c-m stext-101 cl5 size-103 bg2 bor1 hov-btn1 p-lr-15 trans-04">
 					Load More
 				</a>
 			</div>
@@ -750,6 +750,70 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	 <!-- Toastr JS -->
 	 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
+	 <!-- for load more -->
+	  <script>
+		let limit = 12;
+
+		$("#loadMore").click(async (e) => {
+			const showLoadedProducts = document.querySelector('.showSearchProduct');
+			const showProducts = document.querySelector('.showProducts');
+
+			$.ajax({
+				url: `/?limit=${limit}`,
+				method: 'get',
+				success: (response) => {
+					
+					showLoadedProducts.innerHTML = "" 
+
+					showProducts.classList.add('d-none');
+					showLoadedProducts.classList.remove('d-none');
+
+					response.products.forEach((product) => {
+						const productContainer = document.createElement("div");
+						productContainer.classList.add(
+							'col-sm-6',
+							'col-md-4',
+							'col-lg-3',
+							'p-b-35',
+							'isotope-item',
+							`${product.category.name}`
+						);
+						productContainer.innerHTML = `
+							<div class="block2">
+								<div class="block2-pic hov-img0">
+									<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+									<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+									productId="${product._id}">
+										Quick View
+									</a>
+								</div>
+								<div class="block2-txt flex-w flex-t p-t-14">
+									<div class="block2-txt-child1 flex-col-l">
+										<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+											${product.name}
+										</a>
+										<span class="stext-105 cl3">${product.price}</span>
+										<span class="description cl3" style="display: none;">
+											${product.description}
+										</span>
+									</div>
+								</div>
+							</div>
+						`;
+						showLoadedProducts.appendChild(productContainer);
+					});
+
+					// Re-initialize libraries like Isotope if needed
+					$('.isotope-grid').isotope('reloadItems').isotope();
+
+					// Increment the limit
+					limit += 4;
+				},
+			});
+		});
+
+	  </script>
+
 	 <!-- for filteringg -->
 	 <script>
 		// filtering based category
@@ -817,51 +881,42 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							showProducts.classList.add("d-none") ;
 							showFilteredProducts.classList.remove('d-none') ;
 									
-							response.products.forEach((product)=>{
-							const productContainer = document.createElement("div") ;
-							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item', `${product.category.name}`) ;
+							response.products.forEach((product) => {
+							const productContainer = document.createElement("div");
+							productContainer.classList.add(
+								'col-sm-6',
+								'col-md-4',
+								'col-lg-3',
+								'p-b-35',
+								'isotope-item',
+								`${product.category.name}`
+							);
 							productContainer.innerHTML = `
-							            
-											<!-- Block -->
-												<div class="block2">
-													<div class="block2-pic hov-img0">
-														<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
-							
-														<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
-														productId = ${product._id}>
-															Quick View
-														</a>
-													</div>
-							
-													<div class="block2-txt flex-w flex-t p-t-14">
-														<div class="block2-txt-child1 flex-col-l ">
-															<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-																${product.name}
-															</a>
-							
-															<span class="stext-105 cl3">
-																${product.price}
-															</span>
-															<span class="description  cl3" style="display: none ;">
-																${product.description}
-															</span>
-														</div>
-							
-														<div class="block2-txt-child2 flex-r p-t-3">
-															
-																<!-- <a onclick="addtoWishlist(')" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 ">
-																	<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-																	<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-																</a> -->
-															
-															
-														</div>
-													</div>
-												</div>
-								
-								`
-								showFilteredProducts.appendChild(productContainer) ;
-							})
+								<div class="block2">
+									<div class="block2-pic hov-img0">
+										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+										productId="${product._id}">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+												${product.name}
+											</a>
+											<span class="stext-105 cl3">${product.price}</span>
+											<span class="description cl3" style="display: none;">
+												${product.description}
+											</span>
+										</div>
+									</div>
+								</div>
+							`;
+							showFilteredProducts.appendChild(productContainer);
+						});
+						// Re-initialize libraries like Isotope if needed
+						$('.isotope-grid').isotope('reloadItems').isotope();
 						}
 						else{
 							console.log('no products are found') ;
@@ -1001,8 +1056,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						showProducts.classList.add("d-none") ;
 						noSearchProducts.classList.add('d-none') ;
 						showSearchProduct.classList.remove('d-none') ;
-						
-						showSearchProduct.classList.add('faade-in');
+				
 
 						// remove the animation after animation complete
 						showSearchProduct.addEventListener('animationend', () => {
@@ -1013,51 +1067,42 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						// removing the all html contents
 						showSearchProduct.innerHTML = "" ;
 
-						response.searchProducts.forEach( product => {
-							
-							const productContainer = document.createElement("div") ;
-							productContainer.classList.add('col-sm-6', 'col-md-4', 'col-lg-3', 'p-b-35', 'isotope-item' , `${product.category.name}`) ;
+						response.searchProducts.forEach((product) => {
+							const productContainer = document.createElement("div");
+							productContainer.classList.add(
+								'col-sm-6',
+								'col-md-4',
+								'col-lg-3',
+								'p-b-35',
+								'isotope-item',
+								`${product.category.name}`
+							);
 							productContainer.innerHTML = `
-											<!-- Block -->
-												<div class="block2">
-													<div class="block2-pic hov-img0" >
-														<img src="/product-images/${product.image[0]}" data-images= ${product.image} alt="IMG-PRODUCT">
-							
-														<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
-														productId = ${product._id}>
-															Quick View
-														</a>
-													</div>
-							
-													<div class="block2-txt flex-w flex-t p-t-14">
-														<div class="block2-txt-child1 flex-col-l ">
-															<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-																${product.name}
-															</a>
-							
-															<span class="stext-105 cl3">
-																${product.price}
-															</span>
-															<span class="description  cl3" style="display: none ;">
-																${product.description}
-															</span>
-														</div>
-							
-														<div class="block2-txt-child2 flex-r p-t-3">
-															
-																<!-- <a onclick="addtoWishlist(')" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2 ">
-																	<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-																	<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-																</a> -->
-															
-															
-														</div>
-													</div>
-												</div>
-								
-								`
-								showSearchProduct.appendChild(productContainer) ;
-						})
+								<div class="block2">
+									<div class="block2-pic hov-img0">
+										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+										productId="${product._id}">
+											Quick View
+										</a>
+									</div>
+									<div class="block2-txt flex-w flex-t p-t-14">
+										<div class="block2-txt-child1 flex-col-l">
+											<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+												${product.name}
+											</a>
+											<span class="stext-105 cl3">${product.price}</span>
+											<span class="description cl3" style="display: none;">
+												${product.description}
+											</span>
+										</div>
+									</div>
+								</div>
+							`;
+							showSearchProduct.appendChild(productContainer);
+						});
+						// Re-initialize libraries 
+						$('.isotope-grid').isotope('reloadItems').isotope();
 					}
 					else{
 						showProducts.classList.add("d-none") ;
@@ -1091,8 +1136,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			    showSearchProduct.classList.add('d-none') ;
 				noSearchProducts.classList.add('d-none') ;
 
-				// add animation to showProducts
-				showProducts.classList.add('faade-in');
+				// Re-initialize libraries 
+				$('.isotope-grid').isotope('reloadItems').isotope();
 
 
 			}

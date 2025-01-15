@@ -116,7 +116,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-sm-2 form-label" for="email">Name</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="name" placeholder="product name" class="form-control">
+                                                <input type="text" name="name" placeholder="product name" class="form-control" required>
                                                 
                                             </div>
                                         </div>
@@ -124,7 +124,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-sm-2 form-label" for="password">Price</label>
                                             <div class="col-sm-10">
-                                                <input type="number" name="price" placeholder="product price" class="form-control">
+                                                <input type="number" name="price" placeholder="product price" class="form-control" required>
                                                 
                                             </div>
                                         </div>
@@ -132,7 +132,7 @@
                                         <div class="mb-3 row">
                                             <label class="col-sm-2 form-label" for="category">Category</label>
                                             <div class="col-sm-10">
-                                                <select name="category" class="form-control">
+                                                <select name="category" class="form-control " required>
                                                     <option value="" disabled selected>Select a category</option>
                                                     <% categories.forEach(category => { %>
                                                         <option value="<%= category.name %>"><%= category.name %></option>
@@ -145,7 +145,7 @@
                                             <div class="mb-3 row">
                                                 <label class="col-sm-2 form-label" for="password">Stock</label>
                                                 <div class="col-sm-10">
-                                                    <input type="number" name="quantity" placeholder="product stock" class="form-control">
+                                                    <input type="number" name="quantity" placeholder="product stock" class="form-control" required>
                                                     
                                                 </div>
                                             </div>
@@ -153,8 +153,8 @@
                                             <div class="mb-3 row">
                                                 <label class="col-sm-2 form-label" for="category">Size</label>
                                                 <div class="col-sm-10">
-                                                    <select name="size" class="form-control">
-                                                        <option value="" disabled selected>Select a size</option>
+                                                    <select name="size" class="form-control" required>
+                                                        <option value="" disabled selected>Select a size</option> 
                                                             <option value="xs">extra small</option>
                                                             <option value="s"> small</option>
                                                             <option value="m"> medium</option>
@@ -167,7 +167,7 @@
                                             <div class="mb-3 row">
                                                 <label class="col-sm-2 form-label" for="password">Colour</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="colour" placeholder="product colour" class="form-control">
+                                                    <input type="text" name="colour" placeholder="product colour" class="form-control" required>
                                                     
                                                 </div>
                                             </div>
@@ -175,7 +175,7 @@
                                             <div class="mb-3 row">
                                                 <label class="col-sm-2 form-label" for="password">Description</label>
                                                 <div class="col-sm-10">
-                                                    <input type="text" name="description" placeholder="product description" class="form-control">
+                                                    <input type="text" name="description" placeholder="product description" class="form-control" required>
                                                 </div>
                                             </div>
 
@@ -183,7 +183,7 @@
                                             <div class="mb-3 row">
                                                 <label class="col-sm-2 form-label" for="image">Upload Images</label>
                                                 <div class="col-sm-10">
-                                                    <input type="file" name="images" id="imageUpload" class="form-control" accept="image/*" onchange="previewImage(event)" multiple>
+                                                    <input type="file" name="images" id="imageUpload" class="form-control" accept="image/*" onchange="previewImage(event)" multiple required>
                                                 </div>
                                             </div>
                                             <!-- image preview -->
@@ -224,9 +224,12 @@
             const previewContainer = document.getElementById('imgPreview') ;
 
             const files = Array.from(event.target.files);
+            if(files.length !== 3){
+                toastr.info("upoload 3 product images ") ;
+            }
             const output = document.getElementById('previewContainer');
+            output.innerHTML = ""
 
-            
             files.forEach((file,index)=>{ 
                 const reader = new FileReader();
 
@@ -243,6 +246,8 @@
             }) ;
             
         }
+
+     
         
     </script>
 

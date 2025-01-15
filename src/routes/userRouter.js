@@ -104,5 +104,8 @@ userRouter.post('/product-search',userController.searchProduct ) ;
 // filter products 
 userRouter.post('/filter-products',userController.filterProduct ) ;
 
+// for downloading invoice
+userRouter.get('/download-invoice/:orderId',userAuth , userController.downloadInvoice ) ;
+
 
 module.exports = {userRouter} ;

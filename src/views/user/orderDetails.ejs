@@ -28,6 +28,9 @@
 	<link rel="stylesheet" type="text/css" href="css/util.css">
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 <!--===============================================================================================-->
+
+
+
 <style>
 
 		#progressbar-1 {
@@ -364,7 +367,7 @@
 							<div class="card-body">
 							  <div class="row">
 								<div class="col-md-2">
-								  <img src="/product-images/<%= product.image %>"
+								  <img src="/product-images/<%= product.image[0] %>"
 									class="img-fluid" alt="Phone">
 								</div>
 								<div class="col-md-2 text-center d-flex justify-content-center align-items-center">
@@ -380,7 +383,7 @@
 								  <p class="text-muted mb-0 small">Qty: <%= product.quantity %></p>
 								</div>
 								<div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-								  <p class="text-muted mb-0 small"><%= product.price %></p>
+								  <p class="text-muted mb-0 small">₹<%= product.price %></p>
 								</div>
 							  </div>
 							  <hr class="mb-4" style="background-color: #e0e0e0; opacity: 1;">
@@ -390,16 +393,49 @@
 								</div>
 								<div class="col-md-10">
 								  <div class="progress" style="height: 6px; border-radius: 16px;">
-									<div class="progress-bar" role="progressbar"
-									  style="width: 10%; border-radius: 16px; background-color: #d5e0f8;" aria-valuenow="65"
-									  aria-valuemin="0" aria-valuemax="100"></div>
+
+									<!-- changing the progress bar -->
+									 <% if (order.status === 'placed') { %>
+										<div class="progress-bar"  role="progressbar"
+										style="width: 17%; border-radius: 16px; background-color: #d5e0f8;" aria-valuenow="65"
+										aria-valuemin="0" aria-valuemax="100">
+									  </div>
+									 <% } %>
+
+									 <% if (order.status === 'shipped') { %>
+										<div class="progress-bar"  role="progressbar"
+										style="width: 50%; border-radius: 16px; background-color: #d5e0f8;" aria-valuenow="65"
+										aria-valuemin="0" aria-valuemax="100">
+									  </div>
+									 <% } %>
+
+									 <% if (order.status === 'delivered') { %>
+										<div class="progress-bar"  role="progressbar"
+										style="width: 100%; border-radius: 16px; background-color: #d5e0f8;" aria-valuenow="65"
+										aria-valuemin="0" aria-valuemax="100">
+									  </div>
+									 <% } %>
+									
+
 								  </div>
 								  <div class="d-flex justify-content-around mb-1">
-									<p class="text-muted mt-1 mb-0 small ms-xl-5">Out for delivary</p>
-									<p class="text-muted mt-1 mb-0 small ms-xl-5">Delivered</p>
+									<p class="text-muted mt-1 mb-0 small ms-xl-5">placed</p>
+									<p class="text-muted mt-1 mb-0 small ms-xl-5">shipped</p>
+									<p class="text-muted mt-1 mb-0 small ms-xl-5">delivered</p>
 								  </div>
+							    
 								</div>
 							  </div>
+
+							  <% if (order.status === "delivered") { %>
+							   <!-- Return Option Button -->
+								<div class="row justify-content-end mt-4 mb-4">
+									<div class="col-md-3 text-end">
+									  <a href="/return/<%= product.productId %>" class="btn btn-outline-danger btn-sm">Return Item</a>
+									</div>
+								</div>
+							  <% } %>
+				
 							</div>
 						  </div>
 					<% }) %>
@@ -410,22 +446,29 @@
 					  <div class="d-flex justify-content-between mb-3">
 						<p class="text-muted mb-0">payment method : <%= order.paymentMethod %></p>
 						<p class="text-muted mb-0"><span class="fw-bold me-4">status :</span> <%= order.status %></p>
-						
 					  </div>
 		  
 					  <div class="d-flex justify-content-between mb-3">
 						<p class="text-muted mb-0">date : <%= order.date %></p>
-						<p class="text-muted mb-0"><span class="fw-bold me-4">Total :</span> <%= order.totalAmount %></p>
+						<p class="text-muted mb-0"><span class="fw-bold me-4">order ID : <%= order.orderId %></p>
 					  </div>
 		  
 					  <div class="d-flex justify-content-between mb-5">
-						<p class="text-muted mb-0">order ID : <%= order.orderId %></p>
-						<p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
+						<p class="text-muted mb-0"> Delivery Address :
+							
+							 <%= order.address.address %> ,
+							 <%= order.address.city %> ,
+							 <%= order.address.pinNo %>  , 
+							 <%= order.address.country %> 
+						</p>
+						<a href="/download-invoice/<%= order._id %>" class="btn btn-outline-info btn-sm"> Download Invoice </a>
+						
+						
 					  </div>
 				</div>
 					<div class="card-footer border-0 px-4 py-5"
 					  style="background-color: #acacac; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-					  <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total : <span class="h2 mb-0 ms-2"> <%= order.totalAmount %></span></h5>
+					  <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total : <span class="h2 mb-0 ms-2"> ₹<%= order.totalAmount %></span></h5>
 					</div>
 				  <% }) %>
 				  
@@ -591,6 +634,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</span>
 	</div>
 
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+
 	<script>
 			// for show empty cart
 			$('.cart-icon').on('click',(e)=>{
@@ -608,6 +655,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				}
 			})
 		})
+
+	
 	</script>
 	
 

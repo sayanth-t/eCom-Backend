@@ -36,19 +36,31 @@ const razorpay = new Razorpay({
 
 const  { validatePaymentVerification, validateWebhookSignature } = require('../../node_modules/razorpay/dist/utils/razorpay-utils') ;
 
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 
 const getHome = async (req,res) => {
     try {
         
-        const cartProductCount = await getCartCount(req.cookies) ;
-        const orderCount = await getOrderCount(req.cookies) ;
-        const isUserLoggedin = await isLogged(req.cookies) ;
-        const wishlistProductCount = await getWishlistCount(req.cookies) ;
+        const limit = req.query.limit*1 || 3 ;
+
+        console.log(limit)
 
         const products = await Products
                                     .find({}) 
                                     .populate('category') 
-                                
+                                    .limit(limit) 
+
+        const cartProductCount = await getCartCount(req.cookies) ;
+        const orderCount = await getOrderCount(req.cookies) ;
+        const isUserLoggedin = await isLogged(req.cookies) ;
+        const wishlistProductCount = await getWishlistCount(req.cookies) ;
+        
+        if(req.xhr){
+            return res.json({
+                products
+            })
+        }
         const banners = await Banner.find() ;
         res.render('user/home',{products,cartProductCount,isUserLoggedin,orderCount,wishlistProductCount , banners }) ;
 
@@ -827,11 +839,13 @@ const changeCartCount = async (req,res) => {
         await cartItem.save() ;
 
         const cartTotalArray = await CartItem.aggregate([
-            { $match : { user : user._id }},
+            { $match : { user : user._id , isPlaced : false }},
             { $group : { _id : null , cartTotal : { $sum : '$total'}}},
         ])
 
        const {cartTotal} = cartTotalArray[0] ;
+
+       console.log(cartTotal) ;
 
        cart.total = cartTotal ;
        await cart.save() ;
@@ -855,9 +869,9 @@ const placeOrder = async (req,res) => {
     try {
        
         const user = req.user ;
+        
         const {payingMethod,country,state,address,city,postcode} = req.body ;
 
-        console.log('address : ', address )
 
         const {isValid,errors} = addressValidator(req.body) ;
 
@@ -865,7 +879,7 @@ const placeOrder = async (req,res) => {
             throw new Error(errors) ;
         }
 
-        const cart = await Cart.findOne({ user:user._id}) ;
+        const cart = await Cart.findOne({ user:user._id }) ;
 
         let paymentMethod ;
         let status ;
@@ -880,6 +894,7 @@ const placeOrder = async (req,res) => {
             status = 'pending' ;
         }
 
+        
         if(!user.address){
             // creating address document for user
             const userAddress = new Address ({
@@ -933,7 +948,10 @@ const placeOrder = async (req,res) => {
              // if order placed remove the cart
              await Cart.deleteOne({user:user._id}) ;
 
-            res.json({
+            //  changing cart item isPlaced field
+            await CartItem.updateMany({ user : user._id },{ isPlaced : true }) ;
+
+            res.json({ 
                 codPayment : true
             })
         } 
@@ -972,21 +990,26 @@ const placeOrder = async (req,res) => {
 // get order list 
 const getOrders = async (req,res) => {
     try {
-         const cartProductCount = await getCartCount(req.cookies) ;
+        const cartProductCount = await getCartCount(req.cookies) ;
         const orderCount = await getOrderCount(req.cookies) ;
 
-         const user = req.user ;
+        const user = req.user ;
 
-         const orders = await Orders
+        const orders = await Orders
                                 .find({ userId : user._id })
                                 .populate('products')
+                                .populate('address')
     
                        
         if(orders.length === 0) {
             throw new Error('order list is empty')
         }
         
-            res.render('user/orderDetails',{ orders , user , cartProductCount , orderCount }) ;
+        orders.forEach(order => {
+            console.log(order) ;
+        })
+
+        res.render('user/orderDetails',{ orders , user , cartProductCount , orderCount }) ;
         
          
     } catch (err) {
@@ -1001,7 +1024,7 @@ const getOrders = async (req,res) => {
 const verifyPayment = async (req,res) => {
     try {
         console.log("verifyyyyinnngggg")
-        const { payment , order } = req.body ;
+        const { payment , order } = req.body ;                                                  
 
         const user = req.user ; 
         const userOrder = await Orders.findOne({ userId : user._id }) ;
@@ -1018,6 +1041,9 @@ const verifyPayment = async (req,res) => {
 
             // if order placed remove the cart
             await Cart.deleteOne({user:user._id}) 
+
+            //  changing cart item isPlaced field
+            await CartItem.updateMany({ user : user._id },{ isPlaced : true }) ;
             
             res.json({
                 status : true
@@ -1197,6 +1223,95 @@ const filterProduct = async (req,res) => {
     }
 }
 
+// downlod invoice 
+const downloadInvoice = async (req, res) => {
+    try {
+        const { orderId } = req.params;
+
+        // Fetch order details and populate necessary fields
+        const order = await Orders.findById(orderId)
+                                   .populate('userId')
+                                   .populate('address')
+                                   .populate('products')
+
+        if (!order) {
+            throw new Error('Order not found');
+        }
+
+        // Create a new PDF document
+        const doc = new PDFDocument();
+
+        // Set the headers for downloading the PDF
+        const fileName = `invoice-${order.orderId}.pdf`;
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `attachment; filename="${fileName}"`);
+
+        doc.pipe(res);
+
+
+        doc
+        .fontSize(20)
+        .text('THRAYI FASHION', { align: 'center' })
+        .moveDown();
+
+        doc.fontSize(14).text(`Order ID: ${order.orderId}`);
+
+        doc
+        .fontSize(12)
+        .moveDown()
+        .text(`Customer Name: ${order.userId.name}`)
+        .moveDown()
+        .text(`Email: ${order.userId.emailId}`)
+        .moveDown()
+        .text(`Date: ${new Date().toLocaleDateString()}`)
+        .moveDown();
+       
+        // table header
+        doc
+        .fontSize(12)
+        .text('Item', 50, 240)
+        .text('Quantity', 250, 240)
+        .text('Price', 350, 240)
+        .text('Total', 450, 240);
+
+        // for drawing line
+        doc.moveTo(50, 260).lineTo(550, 260).stroke();
+
+        let y = 280;
+
+        // Add items to the invoice
+        order.products.forEach(item => {
+        doc
+            .fontSize(10)
+            .text(item.name, 50, y)
+            .text(item.quantity, 250, y)
+            .text(`${item.price.toFixed(2)}`, 350, y)
+            .text(`${item.total.toFixed(2)}`, 450, y);
+        y += 20;
+        });
+
+         // Add total amount
+        doc
+        .fontSize(12)
+        .text(`Total: ${order.totalAmount.toFixed(2)}`, 450, y + 40, {
+            align: 'right',
+        });
+
+         // Footer
+        doc
+        .fontSize(10)
+        .text('Thank you for shopping with us!', 50, y + 100, { align: 'center' });
+
+
+        // End the document
+        doc.end();
+
+    } catch (err) {
+        console.error('Error generating invoice:', err.message);
+        res.status(500).send({ error: 'Failed to generate invoice.' });
+    }
+};
+
 
 module.exports = {getHome,
                   getProfile,
@@ -1225,5 +1340,6 @@ module.exports = {getHome,
                   applyCoupon,
                   getVerifyPage,
                   searchProduct,
-                  filterProduct
+                  filterProduct,
+                  downloadInvoice
                  }

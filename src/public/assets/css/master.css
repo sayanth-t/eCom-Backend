@@ -819,14 +819,14 @@ table.dataTable>tbody>tr.child ul.dtr-details {
 .date-selection {
     margin-top: 20px;
     margin-bottom: 30px;
-    padding: 30px;
+    padding: 10px;
     /* background-color: #f8f9fa; */
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1); */
     display: flex;
     justify-content: center;
     align-items: center;
-    column-gap: 10px;
+    column-gap: 20px;
 }
 
 /* Style labels */
@@ -850,7 +850,7 @@ table.dataTable>tbody>tr.child ul.dtr-details {
 /* Style for the button */
 .date-selection button {
     display: block;
-    width: 25%;
+    width: 20%;
     padding: 10px;
     font-size: 16px;
     background-color: #007bff; /* Blue background */
@@ -870,3 +870,4 @@ table.dataTable>tbody>tr.child ul.dtr-details {
 .date-selection .form-control {
     margin-bottom: 15px;
 }
+

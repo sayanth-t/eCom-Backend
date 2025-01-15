@@ -118,11 +118,14 @@
                                     <table class="table table-hover" id="dataTables-example" width="100%">
                                         <thead>
                                             <tr>
-                                                <th>USER</th>
-                                                <th>ADDRESS</th>
-                                                <th>PURCHASED PRODUCT</th>
-                                                <th>TOTAL</th>
+                                                <th>ORDER ID</th>
+                                                <th>PRODUCT</th>
                                                 <th>PAYEMENT METHOD</th>
+                                                <th>ADDRESS</th>
+                                                <th>ORDER DATE</th>
+                                                
+                                                <th>TOTAL</th>
+                                               
                                                 <th>STATUS</th>
                                                
                                             </tr>
@@ -131,20 +134,23 @@
                                             
                                             <%  orders.forEach(order => { %>
                                                 <tr id="order-row-<%= order._id %>">
-                                                    <td><%= order.userId.name %></td>
+                                                    <td><%= order.orderId %></td>
+                                                    <td>
+                                                        <% order.products.forEach( product => { %>
+                                                         <%= product.name %>
+                                                        <% }) %>
+                                                     </td>
+                                                    <td><%= order.paymentMethod %></td>
                                                     <td><%= order.address.country %>,
                                                         <%= order.address.state %>,
                                                         <%= order.address.address %>
                                                         <%= order.address.city %>,
                                                         <%= order.address.pinNo %></td>
+                                                    <td><%= (order.date).toDateString() %></td>    
                                                     <!-- <td><button onclick="viewProducts(``)" class="btn btn-primary btn-sm">view products</button></td> -->
-                                                     <td>
-                                                        <% order.products.forEach( product => { %>
-                                                         <%= product.name %>
-                                                        <% }) %>
-                                                     </td>
+                                                    
                                                     <td><%= order.totalAmount %></td>
-                                                    <td><%= order.paymentMethod %></td>
+                                                   
                                                     
                                                     <td>
                                                         <select class="form-select form-select-sm status-dropdown" 
@@ -153,9 +159,9 @@
                                                                 <!-- option to change status -->
                                                             <option value="placed" <%= order.status === 'placed' ? 'selected' : '' %>>placed</option>
                                                             <option value="pending" <%= order.status === 'pending' ? 'selected' : '' %>>pending</option>
-                                                            <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
-                                                            <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
-                                                            <option value="Cancelled" <%= order.status === 'Cancelled' ? 'selected' : '' %>>Cancelled</option>
+                                                            <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                                            <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                                            
                                                         </select>
                                                     </td>
                                                     

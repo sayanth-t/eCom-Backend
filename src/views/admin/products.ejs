@@ -131,7 +131,7 @@
                                         </thead>
                                         <tbody>
                                             <% products.forEach(product => { %>
-                                                <tr>
+                                                <tr id="product-row-<%= product._id %>">
                                                     <td><img src="/product-images/<%= product.image[0] %>" alt="" style="width: 100px; height: auto;"></td>
                                                     <td><%= product.name %></td>
                                                     <td><%= product.price %></td>
@@ -169,12 +169,13 @@
     <script>
         // for delete product
         function deleteProduct(productId, button) {
-            const row = $('.delete-btn').closest('tr'); // Get the row element where the delete button is located
+
+            const row = document.getElementById(`product-row-${productId}`) ;
 
             // Show confirmation dialog before proceeding
-            // if (!confirm("Are you sure you want to delete this product?")) {
-            //     return;
-            // }
+            if (!confirm("Are you sure you want to delete this product?")) {
+                return;
+            }
 
             // Send AJAX request to delete the product
             $.ajax({
