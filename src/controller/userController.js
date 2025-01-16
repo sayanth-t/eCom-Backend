@@ -1111,6 +1111,7 @@ const applyCoupon = async (req,res) => {
 // for searching product
 const searchProduct = async (req,res) => {
     try {
+        
         const { inputData , category} = req.body ;
 
         console.log(category) ;
@@ -1312,6 +1313,16 @@ const downloadInvoice = async (req, res) => {
     }
 };
 
+// request retrun 
+const returnRequest = async (req,res) => {
+    try {
+        console.log(req.body)
+    } catch (err) {
+        
+    }
+}
+
+
 
 module.exports = {getHome,
                   getProfile,
@@ -1341,5 +1352,6 @@ module.exports = {getHome,
                   getVerifyPage,
                   searchProduct,
                   filterProduct,
-                  downloadInvoice
+                  downloadInvoice ,
+                  returnRequest
                  }

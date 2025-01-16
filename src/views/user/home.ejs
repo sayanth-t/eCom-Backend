@@ -781,7 +781,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 						productContainer.innerHTML = `
 							<div class="block2">
 								<div class="block2-pic hov-img0">
-									<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+									<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT"  data-images="${product.image}">
 									<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
 									productId="${product._id}">
 										Quick View
@@ -894,7 +894,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							productContainer.innerHTML = `
 								<div class="block2">
 									<div class="block2-pic hov-img0">
-										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT" data-images="${product.image}">
 										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
 										productId="${product._id}">
 											Quick View
@@ -954,7 +954,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		document.querySelector('.showSearchProduct').addEventListener('click', (event) => {
 		// Check if the clicked element has the class .js-show-modal1
 		if (event.target && event.target.classList.contains('js-show-modal1')) {
-			event.preventDefault(); // Prevent default behavior (if needed)
+			event.preventDefault(); 
 
 			// for show quick view
 			document.querySelector('.js-modal1').classList.add('show-modal1')
@@ -967,10 +967,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			const productName = productElement.querySelector('.js-name-b2').textContent.trim();
 			const productPrice = productElement.querySelector('.stext-105').textContent.trim();
 			const productDescription = productElement.querySelector('.description').textContent.trim();
-			const productImage = productElement.querySelector('.block2-pic img').getAttribute('src');
-
-			console.log(productName) ;
-
+			
 				// to show product details
 				const nameElement = document.querySelector('.product-name') ;
 				const priceElement = document.querySelector('.product-price') ;
@@ -986,6 +983,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				// getting images
 				const productImages = productElement.querySelector('.block2-pic img').getAttribute('data-images') ;
 				const images = productImages.split(",") ;
+
+				console.log(images) ;
 
 				let i = 1 ;
 				images.forEach((image)=>{
@@ -1079,8 +1078,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							);
 							productContainer.innerHTML = `
 								<div class="block2">
-									<div class="block2-pic hov-img0">
-										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT">
+									<div class="block2-pic hov-img0" >
+										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT"  data-images="${product.image}">
 										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
 										productId="${product._id}">
 											Quick View

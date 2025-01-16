@@ -137,7 +137,7 @@
                                                     <td><%= order.orderId %></td>
                                                     <td>
                                                         <% order.products.forEach( product => { %>
-                                                         <%= product.name %>
+                                                         <%= product.name %> ,
                                                         <% }) %>
                                                      </td>
                                                     <td><%= order.paymentMethod %></td>
@@ -177,6 +177,9 @@
                         
                     </div>
                 </div>
+
+               
+
             </div>
             
         </div>
