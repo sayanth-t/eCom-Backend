@@ -4,6 +4,8 @@ const Coupon = require('../models/coupon') ;
 const Admin = require('../models/admin') ;
 const Users = require('../models/users') ;
 const Banner = require('../models/banner') ;
+const Return = require('../models/return') ;
+const Wallet = require('../models/wallet') ;
 
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
@@ -11,6 +13,7 @@ const jwt = require('jsonwebtoken') ;
 const {productValidator} = require('../utils/productValidator') ;
 const Orders = require('../models/orders');
 const { success } = require('toastr') ;
+const CartItem = require('../models/cartItem');
 
 const getLogin = async (req,res) => {
     res.render('admin/login')
@@ -755,6 +758,91 @@ const salesChart = async (req,res) => {
     }
 }
 
+// get return requests
+const getReturnRequests = async (req,res) => {
+    try {
+        const admin = req.admin;
+
+        const returnRequests = await Return.find()
+                                            .populate('productId')
+
+        res.render('admin/returnRequests',{admin,returnRequests}) ;
+    } catch (err) {
+        
+    }
+}
+
+// review return request
+const reviewRequest = async (req,res) => {
+    try {
+        const {requestId,productId,status} = req.body ;
+   
+        const returnRequest = await Return.findById(requestId) 
+                                          .populate('orderId') 
+                                          .populate('productId') 
+
+        if(!returnRequest) {
+            throw new Error("return request is not found !") ;
+        }
+
+        // changing the status
+        returnRequest.status = status   
+        await returnRequest.save() 
+
+        const product = await CartItem.findById(productId) ;
+
+        if(returnRequest.status === "approved" ) {
+            product.returnStatus = "approved" ;
+        }
+        else{
+            product.returnStatus = "rejected" ;
+        }
+        
+        product.save()
+ 
+        // check the user have already a wallet 
+        const isExistWallet = await Wallet.findOne({userId : returnRequest.orderId.userId })  ;
+       
+        if(  returnRequest.status === "approved" ) {
+            if(isExistWallet) {
+                isExistWallet.balance += returnRequest.productId.total ;
+                const transaction = {
+                    type : "credit" ,
+                    amount : returnRequest.productId.total ,
+                    description : "Refund" 
+                }
+                isExistWallet.transactions.push(transaction) ;
+
+                await isExistWallet.save() ;
+            }
+            else{
+                const wallet = new Wallet({
+                    userId : returnRequest.orderId.userId ,
+                    balance : returnRequest.productId.total ,
+                    transactions : [{
+                        type : "credit" ,
+                        amount : returnRequest.productId.total ,
+                        description : "Refund" 
+                    }]
+                })
+                await wallet.save() ;
+            }
+    
+        }
+       
+
+        res.json({
+            statusChanged : true
+        })
+
+    } catch (err) {
+        console.log(err.message)
+        res.json({
+            statusChanged : false
+        })
+    }
+}
+ 
 module.exports = {getDashboard,
                   getProducts ,
                   getAddProduct ,
@@ -786,5 +874,7 @@ module.exports = {getDashboard,
                   deleteBanner,
                   getOrders,
                   changeOrderStatus,
-                  salesChart
+                  salesChart,
+                  getReturnRequests,
+                  reviewRequest
                 } 

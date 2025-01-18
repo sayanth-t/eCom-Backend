@@ -46,10 +46,27 @@ const cartItemSchema = new Schema({
     isPlaced : {
         type : Boolean ,
         default : false
+    },
+    isReturnRequest : {
+        type : Boolean,
+        default : false
+    },
+    returnStatus : {
+        type : String ,
+        enum: {
+            values: ['pending','approved','rejected'],
+            message: '{VALUE} is not supported'
+          }
     }
     
 }, { timestamps: true }) ;
 
+cartItemSchema.pre('save' ,function (next){
+    if(!this.isReturnRequest) {
+        this.returnStatus = undefined
+    }
+    next();
+})
 
 const CartItem = mongoose.model('CartItem',cartItemSchema) ;
 

@@ -45,6 +45,20 @@ const productsSchema = new Schema({
     dateCreated : {
         type : Date ,
         default : Date.now()
+    },
+    ratings : [
+        {
+            star : Number ,
+            comment : String ,
+            postedBy : {
+                type : mongoose.Schema.Types.ObjectId ,
+                ref : "Users"
+            } 
+        }
+    ] ,
+    totalRating : {
+        type : String,
+        default : 0
     }
 })
 

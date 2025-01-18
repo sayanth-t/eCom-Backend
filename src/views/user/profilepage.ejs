@@ -30,6 +30,10 @@
 <!--===============================================================================================-->
 <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
 
+<!-- Bootstrap 5 CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
 </head>
 <body class="animsition">
 	
@@ -104,10 +108,11 @@
 
 					 <!-- Icon header -->
 					 <div class="wrap-icon-header flex-w flex-r-m">
-						<!-- Search Icon -->
-						<a href="/search" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</a>
+						<% if (isUserLoggedin) { %>
+							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						<% } %>
 	
 						<!-- Cart Icon -->
 						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(cartProductCount){ %>
@@ -318,21 +323,69 @@
 						  <p class="font-italic mb-1">PH : <%= user.phoneNumber %></p>
 						</div>
 					  </div>
-					  <div class="d-flex align-items-center mb-4 text-body">
-						<!-- Cart Icon -->
-						<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11  js-show-cart" >
-							<i class="zmdi zmdi-shopping-cart"></i>
-						</a>
-	
-					   
+					  <!-- Icon section (Cart, Orders, Wallet) -->
+						<div class="d-flex align-items-center mb-4 text-body">
+							<!-- Cart Icon -->
+							<a href="/cart" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-cart">
+								<i class="zmdi zmdi-shopping-cart"></i>
+							</a>
+
 							<!-- Orders Icon -->
-							<a href="/orders" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11" >
+							<a href="/orders" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
 								<i class="zmdi zmdi-assignment"></i>
 							</a>
-						
-					  </div>
-					  
-					  
+
+							<% if (wallet) { %>
+								<!-- Wallet Icon with Modal Trigger -->
+								<a href="#" data-bs-toggle="modal" data-bs-target="#walletModal" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+									<i class="zmdi zmdi-balance-wallet"></i>
+								</a>
+							<% } %>
+						</div>
+
+						<!-- Wallet Modal -->
+						<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
+							<div class="modal-dialog modal-dialog-centered">
+								<div class="modal-content">
+									<!-- Modal Header -->
+									<div class="modal-header bg-dark text-white">
+										<h5 class="modal-title" id="walletModalLabel">
+											<i class="zmdi zmdi-balance-wallet me-2"></i> Your Wallet
+										</h5>
+										<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+									</div>
+
+									<!-- Modal Body -->
+									<div class="modal-body">
+										<!-- Wallet Balance -->
+										<div class="text-center mb-4">
+											<h4 class="text-success">Wallet Balance</h4>
+											<h2 class="fw-bold text-primary">₹<%= wallet.balance %></h2>
+										</div>
+
+										<!-- Transaction History -->
+										<h5 class="mb-3 text-muted">Recent Transactions</h5>
+										<ul class="list-group">
+											<% transactions.forEach(transaction => { %>
+												<li class="list-group-item d-flex justify-content-between align-items-center">
+													<%= transaction.description  %>
+													<span class="badge bg-success rounded-pill"><%= transaction.amount  %></span>
+												</li>
+											<% }) %>
+											
+											
+										</ul>
+									</div>
+
+									<!-- Modal Footer -->
+									<!-- <div class="modal-footer">
+										<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+										<a href="/wallet" class="btn btn-primary">View Full Wallet</a>
+									</div> -->
+								</div>
+							</div>
+						</div>
+
 					
 					</div>
 				  </div>
@@ -503,6 +556,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+	<!-- Bootstrap 5 JS (with Popper.js) -->
+	<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+
 
 	<script>
 		// for showing orderlist is empty
@@ -519,6 +576,23 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				}
 			})
 
+		})
+
+		// for wishlist empty 
+		$('.wishlist-icon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/wishlist' ,
+				method : 'get' ,
+				success : (response) =>{
+					if(response.wishlistEmpty){
+						swal('wishlist is empty!','add products to wishlist', "info");
+					}
+					else{
+						location.href = '/wishlist';
+					}
+				}
+			})
 		})
 
 	</script>

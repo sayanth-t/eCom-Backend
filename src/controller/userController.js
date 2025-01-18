@@ -10,6 +10,8 @@ const Coupon = require('../models/coupon') ;
 const Category = require('../models/category') ;
 const { ObjectId } = require('mongoose').Types;
 const Banner = require('../models/banner') ;
+const Return = require('../models/return') ;
+const Wallet = require('../models/wallet') ;
 
 const crypto = require('crypto') ;
 
@@ -77,7 +79,14 @@ const getProfile = async (req,res) => {
 
         const cartProductCount = await getCartCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
-        res.render('user/profilePage',{user,cartProductCount,isUserLoggedin}) ;
+        const wishlistProductCount = await getWishlistCount(req.cookies) ;
+
+        const wallet = await Wallet.findOne({ userId : user._id }) ;
+
+        // finding latest three transctions
+        const transactions = wallet.transactions
+       
+        res.render('user/profilePage',{user,cartProductCount,isUserLoggedin , wallet , transactions , wishlistProductCount }) ;
 
     } catch (error) {
         
@@ -635,6 +644,8 @@ const getWishlist = async (req,res) =>{
 const getCart = async (req,res) => {
     try {
         const cartProductCount = await getCartCount(req.cookies) ;
+        const isUserLoggedin = await isLogged(req.cookies) ;
+        const wishlistProductCount = await getWishlistCount(req.cookies) ;
         const user = req.user ;
 
         const cart = await Cart
@@ -651,7 +662,7 @@ const getCart = async (req,res) => {
             })
         }
         
-        res.render('user/shoping-cart',{ cart , cartProductCount , userAddress }) ;
+        res.render('user/shoping-cart',{ cart , cartProductCount , userAddress , isUserLoggedin , wishlistProductCount }) ;
     } catch (err) {
         console.log(err.message) ;
         res.redirect('/login') ;
@@ -1316,13 +1327,138 @@ const downloadInvoice = async (req, res) => {
 // request retrun 
 const returnRequest = async (req,res) => {
     try {
-        console.log(req.body)
-    } catch (err) {
+        const user = req.user ;
+        const {orderId,productId,reason} = req.body ;
+
+        // finding the order
+        const order = await Orders.findById(orderId) ;
         
+        if (!order) {
+            throw new Error("order is not found!") ;
+        }
+
+        const product = await CartItem.findById(productId) ;
+
+        if (!product)  {
+            throw new Error("Returning product is not found") ;
+        }
+
+        // checking already requested for return
+        const isReturnRequest = await Return.findOne({orderId,productId}) ;
+
+        if(isReturnRequest){
+            throw new Error('Already requested for return!') ;
+        }
+
+        // changing the product isReturnRequest to true
+        product.isReturnRequest = true
+        product.returnStatus = "pending" 
+        product.save() ;
+
+        // checking the last date for return is over or not
+        const returnLastDate = new Date(order.date) ;
+        returnLastDate.setDate(returnLastDate.getDate() + 15 ) ;
+        const today = new Date() ;
+
+        if( today > returnLastDate ){
+            throw new Error("Return last Date is over!") ;
+        }
+        // console.log('return last date : ',returnLastDate) ;
+        // console.log('ordered date : ', new Date(order.date)) ;
+
+        // saving into retun model
+        const returnRequest = new Return ({
+            orderId ,
+            productId,
+            reason ,
+            status : "pending" ,
+            requested : new Date()
+        })
+
+        await returnRequest.save() ;
+
+        res.json({
+            returnRequest : true
+        })
+         
+    } catch (err) {
+        res.json({
+            returnRequest : false,
+            message : err.message
+        })
     }
 }
 
+// rating
+const productRating = async (req,res) => {
+    try {
+        const user = req.user ;
+        const { productId , star , comment } = req.body ;
 
+        const product = await Products.findById(productId) ;
+
+        // check the user already rated on this product
+        const alreadyRated = await product.ratings.find( rating => rating.postedBy.toString() === user._id.toString() ) ;
+
+        if (alreadyRated) {
+
+            const updatedRating = await Products.updateOne(
+                { "ratings.postedBy": user._id }, 
+                {
+                    $set: {
+                        "ratings.$.star": star, 
+                        "ratings.$.comment": comment, 
+                    },
+                }
+            );
+
+            const updatedProduct = await Products.findById(productId) ;
+            findTotalRating(updatedProduct) ;
+           
+            res.json({
+                updatedRating
+            });
+        }
+         
+        else{
+            // create rating
+            const rating = {        
+                star : star ,
+                comment : comment , 
+                postedBy : user._id
+            }
+            product.ratings.push(rating) ;
+
+            findTotalRating(product) ;
+
+            res.json({
+                product
+            })
+        }
+        
+        async function findTotalRating(product) {
+             // to find number of ratings
+             const numRatings = product.ratings.length ;
+
+             // to fing sum of all ratingss
+             const allRatings = product.ratings.map( rate => rate.star )
+             const sumOfRatings = allRatings.reduce(
+                 (acc,crr) => acc + crr ,
+                 0
+             )
+
+             const avgRating = Math.round(sumOfRatings / numRatings) ;
+ 
+             product.totalRating = avgRating ;
+             await product.save() ;
+        }
+
+    } catch (err) {
+        res.json({
+            message : err.message
+        })
+    }
+}
 
 module.exports = {getHome,
                   getProfile,
@@ -1353,5 +1489,6 @@ module.exports = {getHome,
                   searchProduct,
                   filterProduct,
                   downloadInvoice ,
-                  returnRequest
+                  returnRequest,
+                  productRating
                  }

@@ -103,5 +103,11 @@ adminRouter.get('/admin/order/view',adminAuth,adminController.getOrders ) ;
 // update order status
 adminRouter.patch('/admin/order/change-status/:orderId',adminAuth,adminController.changeOrderStatus ) ;
 
+// for view return requests
+adminRouter.get('/admin/return-request/review',adminAuth, adminController.getReturnRequests ) ;
+
+// review return requests
+adminRouter.patch('/admin/return-request/review',adminAuth,adminController.reviewRequest ) ;
+
 
 module.exports = {adminRouter}

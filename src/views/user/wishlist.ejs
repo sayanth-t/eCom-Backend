@@ -107,10 +107,7 @@
 					 
 					 <!-- Icon header -->
 					<div class="wrap-icon-header flex-w flex-r-m">
-						<!-- Search Icon -->
-						<a href="/search" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</a>
+						
 
 						<% if (isUserLoggedin) { %>
 							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
@@ -302,7 +299,7 @@
 									<tr class="table_row" data-cart-item-id="<%= wishlistItem._id %>">
 										<td class="column-1">
 											<div class="how-itemcart1">
-												<img src="/product-images/<%= wishlistItem.image %>" alt="IMG">
+												<img src="/product-images/<%= wishlistItem.image[0] %>" alt="IMG">
 											</div>
 										</td>
 										<td class="column-2"><%= wishlistItem.name %></td>
@@ -497,6 +494,23 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					}
 					else{
 						location.href = '/cart';
+					}
+				}
+			})
+		})
+
+		// for wishlist empty 
+		$('.wishlist-icon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/wishlist' ,
+				method : 'get' ,
+				success : (response) =>{
+					if(response.wishlistEmpty){
+						swal('wishlist is empty!','add products to wishlist', "info");
+					}
+					else{
+						location.href = '/wishlist';
 					}
 				}
 			})

@@ -35,6 +35,8 @@
 />
 
 
+<!-- Toastr CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
 <style>
 
@@ -366,7 +368,7 @@
 				  
 
 				  <% orders.forEach(order => { %>
-					<div class="card-body p-4">
+					<div class="card-body p-10">
 					<% order.products.forEach( product => { %>
 						<div class="card shadow-0 border mb-4 mt-4">
 							<div class="card-body">
@@ -432,14 +434,37 @@
 								</div>
 							  </div>
 
-							  <% if (order.status === "delivered") { %>
-							   <!-- Return Option Button -->
-								<div class="row justify-content-end mt-4 mb-4">
-									<div class="col-md-3 text-end">
-										<button onclick="showReturn('<%= order._id %>','<%= product._id %>')" class="btn btn-outline-danger btn-sm">return item</button>
-									</div>
+							  <% if ( product.returnStatus === "pending") { %>
+								<div class="alert alert-success text-center p-2 mt-4" role="alert" style="font-size: 0.9rem; border-radius: 0.25rem;">
+									<i class="bi bi-check-circle-fill me-2"></i>
+									Return request submitted
 								</div>
+							  <% } else if (product.returnStatus === "approved" ) { %>
+								<div class="alert alert-success text-center p-2 mt-4" role="alert" style="font-size: 0.9rem; border-radius: 0.25rem;">
+									<i class="bi bi-check-circle-fill me-2"></i>
+									Return request has been approved . Check your wallet
+								</div>
+							  <% } 
+							  	else if (product.returnStatus === "rejected") { %>
+								<div class="alert alert-danger text-center p-2 mt-4" role="alert" style="font-size: 0.9rem; border-radius: 0.25rem;">
+									<i class="bi bi-x-circle-fill me-2"></i> 
+									Return request has been rejected
+								</div>
+								<% }  else { %>
+								<% if (order.status === "delivered") { %>
+									<!-- Return Option Button -->
+									 <div id="return-<%= order._id %>-<%= product._id %>" class="row justify-content-end mt-4 mb-4">
+										 <div class="col-md-3 text-end">
+											 <button  onclick="showReturn('<%= order._id %>','<%= product._id %>')" class="btn btn-outline-danger btn-sm">return item</button>
+										 </div>
+									 </div>
+								   <% } %>
 							  <% } %>
+							  
+
+							 
+							  
+							  
 				
 							</div>
 						  </div>
@@ -470,7 +495,7 @@
 						
 						
 					  </div>
-				</div>
+					</div>
 					<div class="card-footer border-0 px-4 py-5"
 					  style="background-color: #acacac; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
 					  <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total : <span class="h2 mb-0 ms-2"> ₹<%= order.totalAmount %></span></h5>
@@ -684,6 +709,10 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
+	 <!-- Toastr JS -->
+	 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+
 	<!-- when retrun -->
 	 <script>
 
@@ -704,14 +733,32 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	
 		// after submitiing reason
 		$("#returnForm").submit((e)=>{
+			
 			e.preventDefault() ;
 			const formData = $("#returnForm").serialize()
+
+			const orderId = document.getElementById("orderId").value  ;
+			const productId =  document.getElementById("productId").value ;
+			const returnElement = document.getElementById(`return-${orderId}-${productId}`) ;
+
 			$.ajax({
 				url : '/order/return-request' ,
 				method : 'post' ,
 				data : formData ,
 				success  : (response) => {
-					console.log('hey')
+					if(response.returnRequest){
+						toastr.success("return request submitted") ;
+						 // Replace content with styled text
+						 returnElement.innerHTML = `
+													<div class="alert alert-success text-center p-2 m-0" role="alert" style="font-size: 0.9rem; border-radius: 0.25rem;">
+														<i class="bi bi-check-circle-fill me-2"></i>
+														Return request submitted
+													</div>
+												`;
+					}
+					else{
+						toastr.info(response.message) ;
+					}
 				}
 			})
 		})
