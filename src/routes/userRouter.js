@@ -111,7 +111,10 @@ userRouter.get('/download-invoice/:orderId',userAuth , userController.downloadIn
 userRouter.post('/order/return-request',userAuth,userController.returnRequest ) ;
 
 // rating to a product
-userRouter.post('/product/rate',userAuth,userController.productRating ) ;
+userRouter.post('/product/rate/:productId',userAuth,userController.productRating ) ;
+
+// to view product details
+userRouter.get('/product/view/:productId', userController.viewProduct ) ;
 
 
 module.exports = {userRouter} ;

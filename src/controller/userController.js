@@ -11,7 +11,7 @@ const Category = require('../models/category') ;
 const { ObjectId } = require('mongoose').Types;
 const Banner = require('../models/banner') ;
 const Return = require('../models/return') ;
-const Wallet = require('../models/wallet') ;
+const Wallet = require('../models/wallet')  ;
 
 const crypto = require('crypto') ;
 
@@ -40,6 +40,7 @@ const  { validatePaymentVerification, validateWebhookSignature } = require('../.
 
 const PDFDocument = require('pdfkit');
 const fs = require('fs');
+const { default: mongoose } = require('mongoose');
 
 const getHome = async (req,res) => {
     try {
@@ -1393,48 +1394,43 @@ const returnRequest = async (req,res) => {
 const productRating = async (req,res) => {
     try {
         const user = req.user ;
-        const { productId , star , comment } = req.body ;
 
+        const { star , comment } = req.body ;
+        const {productId} = req.params ;
+    
         const product = await Products.findById(productId) ;
-
         // check the user already rated on this product
         const alreadyRated = await product.ratings.find( rating => rating.postedBy.toString() === user._id.toString() ) ;
 
         if (alreadyRated) {
-
-            const updatedRating = await Products.updateOne(
-                { "ratings.postedBy": user._id }, 
+           
+             await Products.updateOne(
+                { _id : productId , "ratings.postedBy": user._id },
                 {
                     $set: {
-                        "ratings.$.star": star, 
-                        "ratings.$.comment": comment, 
+                        "ratings.$.star": star * 1, 
+                        "ratings.$.comment": comment,
                     },
                 }
             );
 
+
             const updatedProduct = await Products.findById(productId) ;
             findTotalRating(updatedProduct) ;
-           
-            res.json({
-                updatedRating
-            });
+        
         }
-         
         else{
             // create rating
             const rating = {        
-                star : star ,
+                star : star*1 ,
                 comment : comment , 
                 postedBy : user._id
             }
             product.ratings.push(rating) ;
 
             findTotalRating(product) ;
-
-            res.json({
-                product
-            })
         }
+
         
         async function findTotalRating(product) {
              // to find number of ratings
@@ -1453,10 +1449,45 @@ const productRating = async (req,res) => {
              await product.save() ;
         }
 
+        const recentRatings = await Products
+                                            .findById(productId,{ratings : 1})
+                                            .sort( { "ratings.postedAt" : -1} )
+                                            
+        
+
+        res.status(200).json({
+            rated : true,
+            recentRatings
+
+        })
+
     } catch (err) {
         res.json({
             message : err.message
         })
+    }
+}
+
+// view product details
+const viewProduct = async (req,res) => {
+    try {
+        const {productId} = req.params ;
+        const isUserLoggedin = await isLogged(req.cookies) ;
+        const product = await Products
+                                     .findById(productId)
+                                     .populate({
+                                        path : "ratings.postedBy"
+                                     })
+
+        const recentRatings = await Products
+                                     .findById(productId,{ratings : 1})
+                                     .sort( { "ratings.postedAt" : -1} )
+                                     .limit(3)
+                                     .populate("ratings.postedBy")
+                                     
+        res.render('user/product',{product,isUserLoggedin,recentRatings })  ;
+    } catch (err) {
+        
     }
 }
 
@@ -1490,5 +1521,6 @@ module.exports = {getHome,
                   filterProduct,
                   downloadInvoice ,
                   returnRequest,
-                  productRating
+                  productRating,
+                  viewProduct
                  }

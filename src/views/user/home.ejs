@@ -371,7 +371,9 @@
 
 							<div class="block2-pic hov-img0" >
 								<img src="/product-images/<%= product.image[0] %>" data-images = "<%= product.image %>" alt="IMG-PRODUCT">
-								<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+
+								<!-- changes => 1) remove "js-show-modal1" class , 2) addedd href="/product/view"  -->
+								<a href="/product/view/<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 "
 								productId = "<%= product._id %>">
 									Quick View
 								</a>
@@ -895,7 +897,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 								<div class="block2">
 									<div class="block2-pic hov-img0">
 										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT" data-images="${product.image}">
-										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+										<a href="/product/view/${product._id}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04"
 										productId="${product._id}">
 											Quick View
 										</a>
@@ -1080,7 +1082,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 								<div class="block2">
 									<div class="block2-pic hov-img0" >
 										<img src="/product-images/${product.image[0]}" alt="IMG-PRODUCT"  data-images="${product.image}">
-										<a class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1"
+										<a  href="/product/view/${product._id}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04"
 										productId="${product._id}">
 											Quick View
 										</a>

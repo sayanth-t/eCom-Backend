@@ -53,7 +53,11 @@ const productsSchema = new Schema({
             postedBy : {
                 type : mongoose.Schema.Types.ObjectId ,
                 ref : "Users"
-            } 
+            } ,
+            postedAt : {
+                type : Date ,
+                default : new Date()
+            }
         }
     ] ,
     totalRating : {
