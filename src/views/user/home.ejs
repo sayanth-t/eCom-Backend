@@ -375,7 +375,7 @@
 								<!-- changes => 1) remove "js-show-modal1" class , 2) addedd href="/product/view"  -->
 								<a href="/product/view/<%= product._id %>" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 "
 								productId = "<%= product._id %>">
-									Quick View
+									View
 								</a>
 							</div>
 	
@@ -661,34 +661,36 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							<!--  -->
 							<div class="p-t-33">
 
-								<form id="cart-form" action="" method="post">
-								<div class="flex-w flex-r-m p-b-10">
-									<div class="size-203 flex-c-m respon6">
-										Size
-									</div>
-
-									<div class="size-204 respon6-next">
-										<div class="rs1-select2 bor8 bg0">
-											<select class="js-select2" name="size">
-												<option>Choose an option</option>
-												<option>Size S</option>
-												<option>Size M</option>
-												<option>Size L</option>
-												<option>Size XL</option>
-											</select>
-											<div class="dropDownSelect2"></div>
+								<form action="">
+									<div class="flex-w flex-r-m p-b-10">
+										<div class="size-203 flex-c-m respon6">
+											Size
+										</div>
+		
+										<div class="size-204 respon6-next">
+											<div class="rs1-select2 bor8 bg0">
+												<select class="js-select2" name="time">
+													<option>Choose an option</option>
+													<option>Size S</option>
+													<option>Size M</option>
+													<option>Size L</option>
+													<option>Size XL</option>
+												</select>
+												<div class="dropDownSelect2"></div>
+											</div>
 										</div>
 									</div>
-								</div>
+								</form>
+	
 
 								<div class="flex-w flex-r-m p-b-10">
 									<div class="size-203 flex-c-m respon6">
 										Color
 									</div>
-
+	
 									<div class="size-204 respon6-next">
 										<div class="rs1-select2 bor8 bg0">
-											<select class="js-select2" name="colour">
+											<select class="js-select2" name="time">
 												<option>Choose an option</option>
 												<option>Red</option>
 												<option>Blue</option>
@@ -699,27 +701,26 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 										</div>
 									</div>
 								</div>
-
+	
 								<div class="flex-w flex-r-m p-b-10">
 									<div class="size-204 flex-w flex-m respon6-next">
 										<div class="wrap-num-product flex-w m-r-20 m-tb-10">
 											<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-minus"></i>
 											</div>
-
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="buyQuantity" value="1">
-
+	
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
+	
 											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
-
-										<button type="submit" class="add-to-cart flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+	
+										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
 									</div>
 								</div>	
-							</form>
 							</div>
 
 							<!--  -->
