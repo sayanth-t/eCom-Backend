@@ -61,7 +61,7 @@ const productsSchema = new Schema({
         }
     ] ,
     totalRating : {
-        type : String,
+        type : Number,
         default : 0
     }
 })

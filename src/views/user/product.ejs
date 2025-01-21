@@ -75,59 +75,77 @@
 			<div class="wrap-menu-desktop how-shadow1">
 				<nav class="limiter-menu-desktop container">
 					
-					<!-- Logo desktop -->		
-					<a href="#" class="logo">
-						<img src="images/icons/logo-01.png" alt="IMG-LOGO">
+					 <!-- Logo desktop -->		
+					 <a href="#" class="logo">
+						<img src="/images/icons/logo-01.png" alt="IMG-LOGO">
 					</a>
-
+	
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
-							<li>
-								<a href="index.html">Home</a>
-								<ul class="sub-menu">
-									<li><a href="index.html">Homepage 1</a></li>
-									<li><a href="home-02.html">Homepage 2</a></li>
-									<li><a href="home-03.html">Homepage 3</a></li>
-								</ul>
+							<li class="active-menu">
+								<a href="/">Home</a>
+								
 							</li>
-
+	
 							<li>
-								<a href="product.html">Shop</a>
+								<a href="/products">Shop</a>
 							</li>
-
+	
 							<li class="label1" data-label1="hot">
 								<a href="shoping-cart.html">Features</a>
 							</li>
-
+	
 							<li>
 								<a href="blog.html">Blog</a>
 							</li>
-
+	
 							<li>
 								<a href="about.html">About</a>
 							</li>
-
+	
 							<li>
 								<a href="contact.html">Contact</a>
 							</li>
 						</ul>
-					</div>	
+					</div>
 
-					<!-- Icon header -->
-					<div class="wrap-icon-header flex-w flex-r-m">
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</div>
+					 <!-- Icon header -->
+					 <div class="wrap-icon-header flex-w flex-r-m">
+                    
 
-						<div class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" data-notify="2">
+						<% if (isUserLoggedin) { %>
+							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						<% } %>
+						
+						
+	
+						<!-- Cart Icon -->
+						<a  class="cart-icon icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"  <% if(cartProductCount){ %>
+							data-notify = "<%= cartProductCount %>"
+						  <% } else{ %>  
+							data-notify = "0"
+						 <% } %>>
 							<i class="zmdi zmdi-shopping-cart"></i>
-						</div>
-
-						<a href="#" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="0">
-							<i class="zmdi zmdi-favorite-outline"></i>
+						</a>
+	
+					   <% if (isUserLoggedin) { %>
+						 <!-- Orders Icon -->
+						 <a href="/orders" class="orderIcon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= orderCount %>">
+							<i class="zmdi zmdi-assignment"></i>
+						</a>
+					   <% } %>
+						   
+						
+	
+						<!-- User Profile Icon -->
+						<a href="/profile/view" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11">
+							<i class="zmdi zmdi-account"></i>
 						</a>
 					</div>
+					
 				</nav>
 			</div>	
 		</div>
@@ -248,18 +266,13 @@
 	<!-- breadcrumb -->
 	<div class="container">
 		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
-			<a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+			<a href="/" class="stext-109 cl8 hov-cl1 trans-04">
 				Home
 				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
 			</a>
 
-			<a href="product.html" class="stext-109 cl8 hov-cl1 trans-04">
-				Men
-				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
-			</a>
-
 			<span class="stext-109 cl4">
-				Lightweight Jacket
+				<%= product.name %>
 			</span>
 		</div>
 	</div>
@@ -436,7 +449,8 @@
 										<!-- Average Rating Section -->
 										<div class="p-b-30 text-center border-bottom pb-4">
 											<h5 class="mtext-108 cl2 p-b-10">Average Rating</h5>
-											<div class="flex-w flex-m justify-content-center p-t-10">
+
+											<div class="avgTotal flex-w flex-m justify-content-center p-t-10">
 												<span class="fs-24 cl11 m-r-10">
 													<!-- Loop to display average stars -->
 													<% for (let i = 0; i < product.totalRating; i++) { %>
@@ -450,6 +464,10 @@
 													(<%= product.totalRating %> out of 5)
 												</span>
 											</div>
+
+											<!-- after adding new review -->
+											 <div class="showAvgTotal d-none"></div>
+											
 										</div>
 
 										<!-- Divider -->
@@ -458,9 +476,10 @@
 										<!-- Customer Reviews Section -->
 										<h5 class="mtext-108 cl2 p-b-14">Customer Reviews</h5>
 
-										<!-- Checking if there are reviews -->
+										<div class="review-list">
+											<!-- Checking if there are reviews -->
 										<% if (product.ratings.length > 0) { %>
-											<div class="review-list">
+											<div >
 												<% recentRatings.ratings.forEach((rating) => { %>
 													<div class="review-card card mb-3">
 														<div class="card-body">
@@ -483,8 +502,14 @@
 												<% }) %>
 											</div>
 										<% } else { %>
-											<p>No reviews yet.</p>
+											<p class="no-reviews">No reviews yet.</p>
 										<% } %>
+										</div>
+										
+
+										<!-- to show newly added review -->
+										 <div class="reviewShow  d-none" ></div>
+
 
 										<!-- Divider -->
 										<div class="border-bottom my-4"></div>
@@ -550,37 +575,40 @@
 			<div class="wrap-slick2">
 				<div class="slick2">
 
-					<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
-						<!-- Block2 -->
-						<div class="block2">
-							<div class="block2-pic hov-img0">
-								<img src="images/product-01.jpg" alt="IMG-PRODUCT">
-
-								<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
-									Quick View
-								</a>
-							</div>
-
-							<div class="block2-txt flex-w flex-t p-t-14">
-								<div class="block2-txt-child1 flex-col-l ">
-									<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
-										Esprit Ruffle Shirt
+					<% relatedProducts.forEach(product => { %>
+						<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+							<!-- Block2 -->
+							<div class="block2">
+								<div class="block2-pic hov-img0">
+									<img src="/product-images/<%= product.image[0] %>" alt="IMG-PRODUCT">
+	
+									<a href="#" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04 js-show-modal1">
+										Quick View
 									</a>
-
-									<span class="stext-105 cl3">
-										$16.64
-									</span>
 								</div>
-
-								<div class="block2-txt-child2 flex-r p-t-3">
-									<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
-										<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
-										<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
-									</a>
+	
+								<div class="block2-txt flex-w flex-t p-t-14">
+									<div class="block2-txt-child1 flex-col-l ">
+										<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+											<%= product.name %>
+										</a>
+	
+										<span class="stext-105 cl3">
+											<%= product.price %>
+										</span>
+									</div>
+	
+									<div class="block2-txt-child2 flex-r p-t-3">
+										<a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+											<img class="icon-heart1 dis-block trans-04" src="images/icons/icon-heart-01.png" alt="ICON">
+											<img class="icon-heart2 dis-block trans-04 ab-t-l" src="images/icons/icon-heart-02.png" alt="ICON">
+										</a>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
+					<% }) %>
+					
 
 				</div>
 			</div>
@@ -895,7 +923,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		</div>
 	</div>
 
-	
+
 	<!-- for review submition -->
 	<script>
 		$(document).ready(function () {
@@ -905,13 +933,71 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				const formData = $("#review-submit-form").serialize();
 				const productId = $("#review-submit-form").data("productid");
 				
+				const review = document.querySelector(".review-list") ;
+				const reviewShow = document.querySelector(".reviewShow") ;
+				const noReview = document.querySelector(".no-reviews") ;
+
+				const avgTotal = document.querySelector(".avgTotal") ;
+				const showAvgTotal = document.querySelector(".showAvgTotal") ;
 	
 				$.ajax({
 					url : `/product/rate/${productId}` , 
 					method : 'post' ,
 					data : formData , 
 					success : (response) => {
-						console.log(response) ;
+						if(response.rated){
+
+							reviewShow.innerHTML = "" ;
+							showAvgTotal.innerHTML = "" ;
+
+							response.recentRatings.ratings.forEach( rating => {
+								const reviewContainer = document.createElement("div") ;
+								reviewContainer.classList.add("review-card" ,"card","mb-3") ;
+
+								reviewContainer.innerHTML = `
+											<div class="card-body">
+											<h6 class="mtext-107 cl2 font-weight-bold">
+												${rating.postedBy.name}
+												<span class="fs-18 cl11">
+													${[...Array(rating.star)].map(() => '<i class="zmdi zmdi-star"></i>').join('')}
+													${[...Array(5 - rating.star)].map(() => '<i class="zmdi zmdi-star-outline"></i>').join('')}
+												</span>
+											</h6>
+											<p class="stext-102 cl6 fs-14">
+												${rating.comment}
+											</p>
+										</div>`
+										
+								reviewShow.appendChild(reviewContainer)	;
+
+								review.classList.add("d-none") ;
+								
+								reviewShow.classList.remove("d-none") ;
+
+								if(noReview){
+									noReview.classList.add("d-none")
+								}
+
+
+							});
+
+							const totalReviewContainer = document.createElement("div") ;
+							totalReviewContainer.classList.add ("flex-w" , "flex-m" , "justify-content-center" , "p-t-10")
+							totalReviewContainer.innerHTML = `
+												<span class="fs-24 cl11 m-r-10">
+													<!-- Loop to display average stars -->
+													${[...Array(response.avgRating)].map(() => '<i class="zmdi zmdi-star"></i>').join('')}
+													${[...Array(5 - response.avgRating)].map(() => '<i class="zmdi zmdi-star-outline"></i>').join('')}
+												</span>
+												<span class="stext-102 cl6 fs-16">
+													( ${response.avgRating} out of 5)
+												</span>`
+							showAvgTotal.appendChild(totalReviewContainer) ;	
+							
+							avgTotal.classList.add("d-none") ;
+							showAvgTotal.classList.remove("d-none") ;
+
+						}
 					}
 				})
 	
@@ -945,7 +1031,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 <!--===============================================================================================-->
 	<script src="vendor/parallax100/parallax100.js"></script>
 	<script>
-        $('.parallax100').parallax100();
+        $('.parallax100').parallax100;
 	</script>
 <!--===============================================================================================-->
 	<script src="/vendor/MagnificPopup/jquery.magnific-popup.min.js"></script>

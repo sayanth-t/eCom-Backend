@@ -1447,19 +1447,23 @@ const productRating = async (req,res) => {
  
              product.totalRating = avgRating ;
              await product.save() ;
+
+             const recentRatings = await Products
+                                        .findById(productId,{ratings : 1})
+                                        .sort( { "ratings.postedAt" : -1} )
+                                        .populate({
+                                            path : "ratings.postedBy"
+                                        })
+            
+
+                res.status(200).json({
+                            rated : true,
+                            recentRatings ,
+                            avgRating : product.totalRating
+                })
         }
 
-        const recentRatings = await Products
-                                            .findById(productId,{ratings : 1})
-                                            .sort( { "ratings.postedAt" : -1} )
-                                            
-        
-
-        res.status(200).json({
-            rated : true,
-            recentRatings
-
-        })
+     
 
     } catch (err) {
         res.json({
@@ -1471,21 +1475,36 @@ const productRating = async (req,res) => {
 // view product details
 const viewProduct = async (req,res) => {
     try {
+
         const {productId} = req.params ;
+       
+        const cartProductCount = await getCartCount(req.cookies) ;
+        const orderCount = await getOrderCount(req.cookies) ;
         const isUserLoggedin = await isLogged(req.cookies) ;
+        const wishlistProductCount = await getWishlistCount(req.cookies) ;
+
         const product = await Products
                                      .findById(productId)
                                      .populate({
                                         path : "ratings.postedBy"
                                      })
+                                     
 
         const recentRatings = await Products
                                      .findById(productId,{ratings : 1})
                                      .sort( { "ratings.postedAt" : -1} )
                                      .limit(3)
                                      .populate("ratings.postedBy")
+       
+        
+        // providing related products 
+        const productCategory = product.category ;
+
+        const relatedProducts = await Products.find({ $and : [ { category : productCategory } , { _id : { $nin : product._id }} ]  }) ;
+
+        
                                      
-        res.render('user/product',{product,isUserLoggedin,recentRatings })  ;
+        res.render('user/product',{ product , isUserLoggedin , recentRatings , relatedProducts , cartProductCount , orderCount, wishlistProductCount })  ;
     } catch (err) {
         
     }
