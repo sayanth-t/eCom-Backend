@@ -116,5 +116,11 @@ userRouter.post('/product/rate/:productId',userAuth,userController.productRating
 // to view product details
 userRouter.get('/product/view/:productId', userController.viewProduct ) ;
 
+// get about page
+userRouter.get('/about',userController.getAbout )  ;
+
+// get contacts
+userRouter.get("/contact",userController.getContact ) ;
+
 
 module.exports = {userRouter} ;

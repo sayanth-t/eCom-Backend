@@ -6,6 +6,7 @@ const Users = require('../models/users') ;
 const Banner = require('../models/banner') ;
 const Return = require('../models/return') ;
 const Wallet = require('../models/wallet') ;
+const About = require('../models/about') ;
 
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
@@ -842,6 +843,96 @@ const reviewRequest = async (req,res) => {
         })
     }
 }
+
+// get about page
+const getAboutPage = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        const abouts = await About.find() ;
+        console.log(abouts) ;
+        res.render('admin/about',{abouts,admin});
+    } catch (err) {
+        
+    }
+}
+
+// get about add page
+const getAboutAdd = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        res.render("admin/addAbout",{admin}) ;
+    } catch (err) {
+        
+    }
+}
+
+// create new about
+const createAbout = async (req,res) => {
+    try {
+
+        const {title,description} = req.body ;
+        const image = req.file.filename ;
+
+        // creating new About 
+        const about = new About({
+            title ,
+            description ,
+            image
+        })
+        await about.save() ;
+
+        res.redirect('/admin/about/view') ;
+
+    } catch (err) {
+        
+    }
+}
+
+const deleteAbout = async (req,res) => {
+    try {
+        const {aboutId} = req.params ;
+
+        // deleting the about
+        await About.findByIdAndDelete(aboutId) ;
+
+        res.json({
+            aboutDelete : true
+        })
+    } catch (err) {
+        res.json({
+            aboutDelete : false ,
+            message : err.message
+        })
+    }
+}
+
+const getAboutEdit = async (req,res) => {
+    try {
+        const {aboutId} = req.params ;
+        const about = await About.findById(aboutId) ;
+        res.render('admin/editAbout',{about}) ;
+    } catch (err) {
+        
+    }
+}
+
+const editAbout = async (req,res) => {
+    try {
+        const {aboutId} = req.params ;
+        const {title,description} = req.body ;
+        const image = req.file.filename ;
+
+        // updating about
+        await About.findByIdAndUpdate(aboutId,{
+            title ,
+            description ,
+            image
+        })
+        res.redirect('/admin/about/view') ;
+    } catch (err) {
+        
+    }
+}
  
 module.exports = {getDashboard,
                   getProducts ,
@@ -876,5 +967,11 @@ module.exports = {getDashboard,
                   changeOrderStatus,
                   salesChart,
                   getReturnRequests,
-                  reviewRequest
+                  reviewRequest,
+                  getAboutPage,
+                  getAboutAdd,
+                  createAbout,
+                  deleteAbout,
+                  getAboutEdit,
+                  editAbout
                 } 

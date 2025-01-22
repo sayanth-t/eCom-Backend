@@ -109,5 +109,24 @@ adminRouter.get('/admin/return-request/review',adminAuth, adminController.getRet
 // review return requests
 adminRouter.patch('/admin/return-request/review',adminAuth,adminController.reviewRequest ) ;
 
+// get About 
+adminRouter.get('/admin/about/view',adminAuth,adminController.getAboutPage ) ;
+
+// get page for create about 
+adminRouter.get('/admin/about/create',adminAuth,adminController.getAboutAdd ) ;
+
+// create new About
+adminRouter.post('/admin/about/create',adminAuth , upload.single('aboutImage'),adminController.createAbout ) ;
+
+// delete about
+adminRouter.delete('/admin/about/delete/:aboutId',adminAuth,adminController.deleteAbout) ;
+
+// get edit about
+adminRouter.get('/admin/about/edit/:aboutId',adminAuth,adminController.getAboutEdit ) ;
+
+// edit about
+adminRouter.post('/admin/about/edit/:aboutId',adminAuth,upload.single('aboutImage'),adminController.editAbout) ;
+
+ 
 
 module.exports = {adminRouter}

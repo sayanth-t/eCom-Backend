@@ -7,26 +7,26 @@
 <!--===============================================================================================-->	
 	<link rel="icon" type="image/png" href="images/icons/favicon.png"/>
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/font-awesome-4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="/fonts/font-awesome-4.7.0/css/font-awesome.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/iconic/css/material-design-iconic-font.min.css">
+	<link rel="stylesheet" type="text/css" href="/fonts/iconic/css/material-design-iconic-font.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="fonts/linearicons-v1.0.0/icon-font.min.css">
+	<link rel="stylesheet" type="text/css" href="/fonts/linearicons-v1.0.0/icon-font.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animate/animate.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/animate/animate.css">
 <!--===============================================================================================-->	
-	<link rel="stylesheet" type="text/css" href="vendor/css-hamburgers/hamburgers.min.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/css-hamburgers/hamburgers.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/animsition/css/animsition.min.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/animsition/css/animsition.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/select2/select2.min.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/select2/select2.min.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="vendor/perfect-scrollbar/perfect-scrollbar.css">
+	<link rel="stylesheet" type="text/css" href="/vendor/perfect-scrollbar/perfect-scrollbar.css">
 <!--===============================================================================================-->
-	<link rel="stylesheet" type="text/css" href="css/util.css">
-	<link rel="stylesheet" type="text/css" href="css/main.css">
+	<link rel="stylesheet" type="text/css" href="/css/util.css">
+	<link rel="stylesheet" type="text/css" href="/css/main.css">
 <!--===============================================================================================-->
 
 <link
@@ -165,40 +165,40 @@
 						<ul class="main-menu">
 							<li>
 								<a href="/">Home</a>
-								
+							
 							</li>
 
 							<li>
-								<a href="product.html">Shop</a>
+								<a href="/products">Shop</a>
 							</li>
 
-							<li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Features</a>
-							</li>
+						
 
-							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-
-							<li>
-								<a href="about.html">About</a>
+							<li >
+								<a href="/about">About</a>
 							</li>
 
 							<li>
-								<a href="contact.html">Contact</a>
+								<a href="/contact">Contact</a>
 							</li>
 						</ul>
 					</div>	
 
-					 <!-- Icon header -->
-					 <div class="wrap-icon-header flex-w flex-r-m">
-						<!-- Search Icon -->
-						<a href="/search" class="icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 js-show-modal-search">
-							<i class="zmdi zmdi-search"></i>
-						</a>
+					
+					<!-- Icon header -->
+					<div class="wrap-icon-header flex-w flex-r-m">
+                    
+
+						<% if (isUserLoggedin) { %>
+							<a  class="wishlist-icon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= wishlistProductCount %>">
+								<i class="zmdi zmdi-favorite-outline"></i>
+							</a>
+						<% } %>
+						
+						
 	
 						<!-- Cart Icon -->
-						<a  class="cart-icon icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart" <% if(cartProductCount){ %>
+						<a  class="cart-icon icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti js-show-cart"  <% if(cartProductCount){ %>
 							data-notify = "<%= cartProductCount %>"
 						  <% } else{ %>  
 							data-notify = "0"
@@ -206,11 +206,13 @@
 							<i class="zmdi zmdi-shopping-cart"></i>
 						</a>
 	
-					   
-							<!-- Orders Icon -->
-							<a href="/orders" class="dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= orderCount %>">
-								<i class="zmdi zmdi-assignment"></i>
-							</a>
+					   <% if (isUserLoggedin) { %>
+						 <!-- Orders Icon -->
+						 <a href="/orders" class="orderIcon dis-block icon-header-item cl2 hov-cl1 trans-04 p-l-22 p-r-11 icon-header-noti" data-notify="<%= orderCount %>">
+							<i class="zmdi zmdi-assignment"></i>
+						</a>
+					   <% } %>
+						   
 						
 	
 						<!-- User Profile Icon -->
@@ -218,9 +220,6 @@
 							<i class="zmdi zmdi-account"></i>
 						</a>
 					</div>
-	
-	
-
 				</nav>
 			</div>	
 		</div>
@@ -288,8 +287,12 @@
 
 			<ul class="main-menu-m">
 				<li>
-					<a href="/">Home</a>
-				
+					<a href="index.html">Home</a>
+					<ul class="sub-menu-m">
+						<li><a href="index.html">Homepage 1</a></li>
+						<li><a href="home-02.html">Homepage 2</a></li>
+						<li><a href="home-03.html">Homepage 3</a></li>
+					</ul>
 					<span class="arrow-main-menu-m">
 						<i class="fa fa-angle-right" aria-hidden="true"></i>
 					</span>
@@ -333,9 +336,6 @@
 			</div>
 		</div>
 	</header>
-
-	
-
 
 	<!-- breadcrumb -->
 	<div class="container">
@@ -764,15 +764,36 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		})
 	 </script>
 
+	<!-- for sweet alert -->
+	<script src="vendor/sweetalert/sweetalert.min.js"></script>
+
 	<script>
-			// for show empty cart
-			$('.cart-icon').on('click',(e)=>{
+		
+		// for wishlist empty 
+		$('.wishlist-icon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/wishlist' ,
+				method : 'get' ,
+				success : (response) =>{
+					if(response.wishlistEmpty){
+						swal('wishlist is empty!','add products to wishlist', "info");
+					}
+					else{
+						location.href = '/wishlist';
+					}
+				}
+			})
+		})
+
+		// for show empty cart
+		$('.cart-icon ').on('click',(e)=>{
 			e.preventDefault() ;
 			$.ajax({
 				url : '/cart',
 				method : 'get',
 				success : (response) => {
-					if(response.cart){
+					if( response.cartEmpty ){
 						swal('cart is empty!','add products to cart', "info");
 					}
 					else{
@@ -782,8 +803,24 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			})
 		})
 
-	
+		// for show empty orders
+		$('.orderIcon').on('click',(e)=>{
+			e.preventDefault() ;
+			$.ajax({
+				url : '/orders',
+				method : 'get',
+				success : (response) => {
+					if(response.emptyOrder){
+						swal('Order list is empty!','buy products!', "info");
+					}
+					else{
+						location.href = '/orders';
+					}
+				}
+			})
+		})
 	</script>
+
 	
 
 <!--===============================================================================================-->	

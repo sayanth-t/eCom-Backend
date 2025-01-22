@@ -77,43 +77,38 @@
 			<div class="wrap-menu-desktop how-shadow1">
 				<nav class="limiter-menu-desktop container">
 					
-					 <!-- Logo desktop -->		
-					 <a href="#" class="logo">
+					<!-- Logo desktop -->		
+					<a href="#" class="logo">
 						<img src="/images/icons/logo-01.png" alt="IMG-LOGO">
 					</a>
-	
+
 					<!-- Menu desktop -->
 					<div class="menu-desktop">
 						<ul class="main-menu">
 							<li class="active-menu">
 								<a href="/">Home</a>
-								
+							
 							</li>
-	
+
 							<li>
 								<a href="/products">Shop</a>
 							</li>
-	
-							<li class="label1" data-label1="hot">
-								<a href="shoping-cart.html">Features</a>
+
+						
+
+							<li >
+								<a href="/about">About</a>
 							</li>
-	
+
 							<li>
-								<a href="blog.html">Blog</a>
-							</li>
-	
-							<li>
-								<a href="about.html">About</a>
-							</li>
-	
-							<li>
-								<a href="contact.html">Contact</a>
+								<a href="/contact">Contact</a>
 							</li>
 						</ul>
-					</div>
+					</div>	
 
-					 <!-- Icon header -->
-					 <div class="wrap-icon-header flex-w flex-r-m">
+					
+					<!-- Icon header -->
+					<div class="wrap-icon-header flex-w flex-r-m">
                     
 
 						<% if (isUserLoggedin) { %>
@@ -147,7 +142,6 @@
 							<i class="zmdi zmdi-account"></i>
 						</a>
 					</div>
-					
 				</nav>
 			</div>	
 		</div>
@@ -216,7 +210,7 @@
 			<ul class="main-menu-m">
 				<li>
 					<a href="index.html">Home</a>
-					
+					<
 					<span class="arrow-main-menu-m">
 						<i class="fa fa-angle-right" aria-hidden="true"></i>
 					</span>
@@ -350,12 +344,12 @@
 			
 											<div class="size-204 respon6-next">
 												<div class="rs1-select2 bor8 bg0">
-													<select class="js-select2" name="size">
+													<select class="js-select2" name="size" >
 														<option>Choose an option</option>
-														<option>xs</option>
-														<option>s</option>
-														<option>m</option>
-														<option>xl</option>
+														<option value="xs">xs</option>
+														<option value="s">s</option>
+														<option value="m">m</option>
+														<option value="xl">xl</option>
 													</select>
 													<div class="dropDownSelect2"></div>
 												</div>
@@ -370,12 +364,12 @@
 			
 											<div class="size-204 respon6-next">
 												<div class="rs1-select2 bor8 bg0">
-													<select class="js-select2" name="colour">
+													<select class="js-select2" name="colour" >
 														<option>Choose an option</option>
-														<option>Red</option>
-														<option>Blue</option>
-														<option>White</option>
-														<option>Grey</option>
+														<option value="red">Red</option>
+														<option value="blue">Blue</option>
+														<option value="white">White</option>
+														<option value="grey">Grey</option>
 													</select>
 													<div class="dropDownSelect2"></div>
 												</div>
@@ -403,6 +397,7 @@
 									</div>	
 								</div>
 							</form>
+							
 	
 							<!--  -->
 							<div class="flex-w flex-m p-l-100 p-t-40 respon7">
@@ -577,7 +572,7 @@
 				<div class="slick2">
 
 					<% relatedProducts.forEach(product => { %>
-						<div class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
+						<div productId="<%= product._id %>" class="item-slick2 p-l-15 p-r-15 p-t-15 p-b-15">
 							<!-- Block2 -->
 							<div class="block2">
 								<div class="block2-pic hov-img0">
@@ -856,7 +851,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 							<!--  -->
 							<div class="p-t-33">
 
-								<form action="">
+								<form id="cart-form" >
 									<div class="flex-w flex-r-m p-b-10">
 										<div class="size-203 flex-c-m respon6">
 											Size
@@ -864,7 +859,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		
 										<div class="size-204 respon6-next">
 											<div class="rs1-select2 bor8 bg0">
-												<select class="js-select2" name="time">
+												<select class="js-select2" name="size">
 													<option>Choose an option</option>
 													<option>Size S</option>
 													<option>Size M</option>
@@ -875,7 +870,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 											</div>
 										</div>
 									</div>
-								</form>
+								
 	
 
 								<div class="flex-w flex-r-m p-b-10">
@@ -885,7 +880,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 	
 									<div class="size-204 respon6-next">
 										<div class="rs1-select2 bor8 bg0">
-											<select class="js-select2" name="time">
+											<select class="js-select2" name="colour">
 												<option>Choose an option</option>
 												<option>Red</option>
 												<option>Blue</option>
@@ -904,18 +899,19 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 												<i class="fs-16 zmdi zmdi-minus"></i>
 											</div>
 	
-											<input class="mtext-104 cl3 txt-center num-product" type="number" name="num-product" value="1">
+											<input class="mtext-104 cl3 txt-center num-product" type="number" name="buyQuantity" value="1">
 	
 											<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
 												<i class="fs-16 zmdi zmdi-plus"></i>
 											</div>
 										</div>
 	
-										<button class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
+										<button type="submit" class="flex-c-m stext-101 cl0 size-101 bg1 bor1 hov-btn1 p-lr-15 trans-04 js-addcart-detail">
 											Add to cart
 										</button>
 									</div>
 								</div>	
+								</form>
 							</div>
 
 							<!--  -->
@@ -1037,15 +1033,28 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 		$("#cartForm").submit((e)=>{
 					e.preventDefault() ;
 
-					const form = document.getElementById("cart-form")
+					const form = document.getElementById("cartForm")
 					const productId = form.getAttribute("data-productId") ;
 					const productName = form.getAttribute("data-productName") ;
-					console.log(productId) ;
+			
+					const size = form.querySelector("select[name='size']").value;
+					const colour = form.querySelector("select[name='colour']").value;
 
-					const formData = $("#cart-form").serialize() ;
+						
+						if (!size || size === "Choose an option") {
+							swal("info", "Please select a size before adding to cart.", "info");
+							return;
+						}
 
+						if (!colour || colour === "Choose an option") {
+							swal("info", "Please select a colour before adding to cart.", "info");
+							return;
+						}
+
+					const formData = $("#cartForm").serialize() ;
 					console.log(formData)
 
+					
 					$.ajax({
 						url : `/cart/${productId}`,
 						method : 'post' ,
@@ -1166,7 +1175,7 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				console.log(productElement) ;
 
 				// Get product details
-				const productId = event.target.getAttribute('productId'); 
+				const productId = productElement.getAttribute('productId'); 
 				const productName = productElement.querySelector('.js-name-b2').textContent.trim();
 				const productPrice = productElement.querySelector('.stext-105').textContent.trim();
 				const productDescription = productElement.querySelector('.description').textContent.trim();
@@ -1204,9 +1213,26 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 				$("#cart-form").submit((e)=>{
 					e.preventDefault() ;
 
+					const form = document.getElementById('cart-form') ;
+
+					const size = form.querySelector("select[name='size']").value;
+					const colour = form.querySelector("select[name='colour']").value;
+
+						
+						if (!size || size === "Choose an option") {
+							swal("info", "Please select a size before adding to cart.", "info");
+							return;
+						}
+
+						if (!colour || colour === "Choose an option") {
+							swal("info", "Please select a colour before adding to cart.", "info");
+							return;
+						}
+
 					const formData = $("#cart-form").serialize() ;
 
 					console.log(formData)
+					console.log(productId)
 
 					$.ajax({
 						url : `/cart/${productId}`,

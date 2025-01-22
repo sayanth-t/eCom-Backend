@@ -4,7 +4,18 @@ const multer = require('multer');
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         console.log('type ; ',req.body.type )
-        const uploadDest = req.body.type === 'banner' ?  './public/banner-images' : './public/product-images'
+        let uploadDest;
+        if (req.body.type === 'banner') {
+          uploadDest = './public/banner-images';
+        } else if (req.body.type === 'product') {
+          uploadDest = './public/product-images';
+        } else if (req.body.type === 'about') {
+          uploadDest = './public/about-images';
+        } else {
+          uploadDest = './public/uploads';
+        }
+
+        // const uploadDest = req.body.type === 'banner' ?  './public/banner-images' : './public/product-images'
       cb(null, uploadDest ) ;
     },
     filename: function (req, file, cb) {

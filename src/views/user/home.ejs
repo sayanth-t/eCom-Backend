@@ -228,8 +228,8 @@
 					
 				</div>
 
-			<!-- Filter -->
-			<div class="dis-none panel-filter w-full p-t-10">
+				<!-- Filter -->
+				<div class="dis-none panel-filter w-full p-t-10">
 					<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
 
 						<!-- sort by -->
@@ -361,6 +361,7 @@
 						
 					</div>
 				</div>
+				
 			</div>
 
 			<div class="row isotope-grid showProducts" >
@@ -850,6 +851,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 			showFilteredProducts.classList.add('d-none') ;
 			noSearchProducts.classList.add('d-none') ;
 	
+			// Re-initialize libraries like Isotope if needed
+						$('.isotope-grid').isotope('reloadItems').isotope();
 
 			})
 			// when clicking the link for filter
@@ -880,7 +883,8 @@ Copyright &copy;<script>document.write(new Date().getFullYear());</script> All r
 					data : filterData ,
 					success : ( response ) => {
 						if(response.status){
-							
+
+							noSearchProducts.classList.add('d-none') ;
 							showProducts.classList.add("d-none") ;
 							showFilteredProducts.classList.remove('d-none') ;
 									
