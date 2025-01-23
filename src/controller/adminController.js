@@ -7,6 +7,7 @@ const Banner = require('../models/banner') ;
 const Return = require('../models/return') ;
 const Wallet = require('../models/wallet') ;
 const About = require('../models/about') ;
+const Contact = require('../models/contact') ;
 
 const bcrypt = require('bcrypt') ;
 const jwt = require('jsonwebtoken') ;
@@ -293,6 +294,7 @@ const deleteProduct = async (req,res) => {
 const getEditPage = async (req,res) => {
     try {
 
+        const admin = req.admin ;
         const {productId}  = req.params ; 
         const product = await Products
                                     .findById(productId) 
@@ -301,7 +303,7 @@ const getEditPage = async (req,res) => {
         const categories = await Category
                                 .find({})     
 
-        res.render('admin/editProduct' , {categories,product} ) ;
+        res.render('admin/editProduct' , {categories,product,admin} ) ;
     } catch (err) {
         
     }
@@ -933,6 +935,95 @@ const editAbout = async (req,res) => {
         
     }
 }
+
+// get contacts
+const getContacts = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        const contacts = await Contact.find() ;
+        
+        res.render('admin/contacts',{contacts,admin});
+    } catch (err) {
+        
+    }
+}
+
+// get create contact page
+const getCreateContact = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        res.render("admin/addContact",{admin}) ;
+    } catch (err) {
+        
+    }
+}
+
+// create contact
+const createContact = async (req,res) => {
+    try {
+       
+        const {address,phNumber,emailId} = req.body ;
+        const contact = new Contact({
+            address ,
+            phNumber ,
+            emailId
+        })
+        await contact.save() ;
+
+        res.redirect('/admin/contact/view') ;
+    } catch (err) {
+        
+    }
+}
+
+// get contact edit
+const getContactEdit = async (req,res) => {
+    try {
+        const admin = req.admin ;
+        const {contactId} = req.params ;
+        const contact = await Contact.findById(contactId) ;
+
+        res.render('admin/editContact',{admin,contact}) ; 
+    } catch (err) {
+        
+    }
+}
+
+const updateContact = async (req,res) => {
+    try {
+        const {address,phNumber,emailId} = req.body ;
+        const {contactId} = req.params ;
+
+        // updating contact details
+        await Contact.findByIdAndUpdate(contactId,{
+            address ,
+            phNumber ,
+            emailId
+        })
+        res.redirect('/admin/contact/view') ;
+    } catch (err) {
+         
+    }
+}
+
+// delete cotact
+const deleteContact = async (req,res) => {
+    try {
+        const {contactId} = req.params ;
+
+        // deleting the contact
+        await Contact.findByIdAndDelete(contactId ) ;
+
+        res.json({
+            contactDelete : true
+        })
+    } catch (err) {
+        res.json({
+            contactDelete : false,
+            message : err.message
+        })
+    }
+}
  
 module.exports = {getDashboard,
                   getProducts ,
@@ -973,5 +1064,11 @@ module.exports = {getDashboard,
                   createAbout,
                   deleteAbout,
                   getAboutEdit,
-                  editAbout
+                  editAbout,
+                  getContacts,
+                  getCreateContact,
+                  createContact ,
+                  getContactEdit,
+                  updateContact,
+                  deleteContact
                 } 

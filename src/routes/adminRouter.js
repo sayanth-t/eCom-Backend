@@ -122,10 +122,28 @@ adminRouter.post('/admin/about/create',adminAuth , upload.single('aboutImage'),a
 adminRouter.delete('/admin/about/delete/:aboutId',adminAuth,adminController.deleteAbout) ;
 
 // get edit about
-adminRouter.get('/admin/about/edit/:aboutId',adminAuth,adminController.getAboutEdit ) ;
+adminRouter.get('/admin/about/edit/:aboutId',adminAuth ,adminController.getAboutEdit ) ;
 
 // edit about
 adminRouter.post('/admin/about/edit/:aboutId',adminAuth,upload.single('aboutImage'),adminController.editAbout) ;
+
+// get contacts details
+adminRouter.get('/admin/contact/view',adminAuth,adminController.getContacts ) ;
+
+// get contact create page
+adminRouter.get('/admin/contact/create',adminAuth,adminController.getCreateContact ) ;
+
+// create new contact
+adminRouter.post('/admin/contact/create',adminAuth,adminController.createContact ) ;
+
+// get contact edit page
+adminRouter.get('/admin/contact/edit/:contactId',adminAuth,adminController.getContactEdit ) ;
+
+// updating contact
+adminRouter.post('/admin/contact/edit/:contactId',adminAuth,adminController.updateContact ) ;
+
+// delete conact
+adminRouter.delete('/admin/contact/delete/:contactId',adminAuth,adminController.deleteContact ) ;
 
  
 

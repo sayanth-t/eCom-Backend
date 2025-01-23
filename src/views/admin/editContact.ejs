@@ -120,43 +120,33 @@
                 
                         <div class="col-lg-12 mt-5">
                             <div class="card">
-                                <div class="card-header">Enter new Banner details</div>
+                                <div class="card-header">Update Contact Details</div>
                                 <div class="card-body">
                                     
-                                    <form id="addCouponForm" action="/admin/banner/create" method="post"  enctype="multipart/form-data" accept-charset="utf-8 mt-5">
+                                    <form id="addAboutForm" action="/admin/contact/edit/<%= contact._id %>" method="post"  accept-charset="utf-8 mt-5">
 
-                                        <!-- for setting req.type as banner -->
-                                        <input type="hidden" name="type" value="banner">
-
-                                        <!-- banner title -->
+                                        <!-- Address details -->
                                         <div class="mb-3 row">
-                                            <label class="col-sm-2 form-label" for="email">Title</label>
+                                            <label class="col-sm-2 form-label" for="email">address</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="title" placeholder="Banner Title" class="form-control">
+                                                <input type="text" name="address" placeholder="Address details" value="<%= contact.address %>" class="form-control" required>
                                                 
                                             </div>
                                         </div>
-                                        <!-- banner sub title -->
+                                        <!-- phone number -->
                                         <div class="mb-3 row">
-                                            <label class="col-sm-2 form-label">Sub Title</label>
+                                            <label class="col-sm-2 form-label">Number</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="subTitle" placeholder="Sub title" class="form-control">
+                                                <input type="text" name="phNumber" placeholder="Phone number" value="<%= contact.phNumber %>" class="form-control" required>
                                                 
                                             </div>
                                         </div>
-             
-                                        <!-- Image -->
-                                        <div class="mb-3 row">
-                                                <label class="col-sm-2 form-label" for="password">Banner Image</label>
-                                                <div class="col-sm-10">
-                                                    <input type="file" name="bannerImage"  placeholder="image" class="form-control" onchange="previewImage(event)">
-                                                    
-                                                </div>
-                                        </div>
-                                        <!-- image preview -->
-                                        <div class="mb-3 row d-none" id="imgPreview">
-                                            <label class="col-sm-2 form-label " >Preview</label>
-                                            <div class="col-sm-10" id="previewContainer" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                         <!-- Eamil id -->
+                                         <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label">Email Id</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" name="emailId" placeholder="Email Id" value="<%= contact.emailId %>" class="form-control" required>
+                                                
                                             </div>
                                         </div>
                                           
@@ -178,37 +168,6 @@
             </div>
         </div>
     </div>
-
-    <!-- Toastr JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-
-   <script>
-     //  to show image uploaded image preview
-     function previewImage(event) {
-
-    const previewContainer = document.getElementById('imgPreview') ;
-
-    const files = Array.from(event.target.files);
-    const output = document.getElementById('previewContainer');
-
-
-    files.forEach((file,index)=>{ 
-        const reader = new FileReader();
-
-        reader.onload = function() {
-            const imagePreview = document.createElement("div") ;
-            const template = `
-                    <img id="preview" src="${reader.result}" alt="Preview" style="width: 100px; height: auto ; ">       
-            `
-            imagePreview.innerHTML = template ;   
-            output.appendChild(imagePreview) ;
-            previewContainer.classList.remove('d-none') ;
-        };
-        reader.readAsDataURL(file);
-    }) ;
-
-    }
-   </script>
 
     <script src="/assets/vendor/jquery/jquery.min.js"></script>
     <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>

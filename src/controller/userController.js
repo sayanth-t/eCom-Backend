@@ -12,6 +12,8 @@ const { ObjectId } = require('mongoose').Types;
 const Banner = require('../models/banner');
 const Return = require('../models/return');
 const Wallet = require('../models/wallet');
+const About = require('../models/about') ;
+const Contact = require('../models/contact') ;
 
 const crypto = require('crypto');
 
@@ -1483,7 +1485,9 @@ const getAbout = async (req,res) => {
     const orderCount = await getOrderCount(req.cookies);
     const isUserLoggedin = await isLogged(req.cookies);
     const wishlistProductCount = await getWishlistCount(req.cookies);
-    res.render("user/about",{cartProductCount,orderCount,isUserLoggedin,wishlistProductCount})
+
+    const abouts = await About.find() ;
+    res.render("user/about",{abouts,cartProductCount,orderCount,isUserLoggedin,wishlistProductCount})
   } catch (err) {
     
   }
@@ -1496,7 +1500,12 @@ const getContact = async (req,res) => {
     const orderCount = await getOrderCount(req.cookies);
     const isUserLoggedin = await isLogged(req.cookies);
     const wishlistProductCount = await getWishlistCount(req.cookies);
-    res.render('user/contact',{cartProductCount,orderCount,isUserLoggedin,wishlistProductCount})
+
+    const contacts = await Contact.find() ;
+    
+    const contact = contacts[0] ;
+
+    res.render('user/contact',{cartProductCount,orderCount,isUserLoggedin,wishlistProductCount,contact})
   } catch (err) {
     
   }
