@@ -3,10 +3,10 @@
   $(function() {
     $('#order-listing').DataTable({
       "aLengthMenu": [
-        [5, 10, 15, -1],
+        [ 5 , 10, 15, -1],
         [5, 10, 15, "All"]
       ],
-      "iDisplayLength": 10,
+      "iDisplayLength": 2,
       "language": {
         search: ""
       }

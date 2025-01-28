@@ -51,7 +51,7 @@ const getHome = async (req, res) => {
   try {
     const limit = req.query.limit * 1 || 3;
 
-    console.log(limit);
+    console.log('lilmit value : ', limit );
 
     const products = await Products.find({}).populate('category').limit(limit);
 
@@ -310,11 +310,23 @@ const getSignup = async (req, res) => {
 // get product page
 const getProduct = async (req, res) => {
   try {
+    const limit = parseInt( req.query.limit ) || 3 ;
+    console.log('limit value : --',limit) ;
+    
     const cartProductCount = await getCartCount(req.cookies);
     const orderCount = await getOrderCount(req.cookies);
     const isUserLoggedin = await isLogged(req.cookies);
     const wishlistProductCount = await getWishlistCount(req.cookies);
-    const products = await Products.find({}).populate('category');
+    const products = await Products
+                                  .find({})
+                                  .populate('category')
+                                  .limit(limit)
+
+    if (req.xhr) {
+      return res.json({
+        products
+      });
+    }                              
 
     res.render('user/allProducts', {
       products,
