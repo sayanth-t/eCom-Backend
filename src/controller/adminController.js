@@ -68,7 +68,6 @@ const getDashboard = async (req,res) =>{
 
     let oneWeekAgo = new Date() ;
     oneWeekAgo.setDate(oneWeekAgo.getDate() - 7); // Get the date 7 days ago
-    
 
     // for find total orders in last week
     const ordersCount = await Orders.aggregate([
@@ -78,6 +77,7 @@ const getDashboard = async (req,res) =>{
         }}
     ])
     const lasteWeekOrderCount = ordersCount[0].totalOrders ;
+
 
     // for finding total revanue
     const revenue = await Orders.aggregate([
@@ -96,6 +96,7 @@ const getDashboard = async (req,res) =>{
         }},
         { $sort : { _id : 1 }}
     ])
+
 
     // for comparing change to y-m-d format of last week days
     const dateRange = (startDate) => {

@@ -345,7 +345,8 @@
 							<% } %>
 						</div>
 
-						<!-- Wallet Modal -->
+						<% if (wallet) { %>
+							<!-- Wallet Modal -->
 						<div class="modal fade" id="walletModal" tabindex="-1" aria-labelledby="walletModalLabel" aria-hidden="true">
 							<div class="modal-dialog modal-dialog-centered">
 								<div class="modal-content">
@@ -387,6 +388,8 @@
 								</div>
 							</div>
 						</div>
+						<% } %>
+						
 
 					
 					</div>

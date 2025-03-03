@@ -12,7 +12,7 @@ const storage = multer.diskStorage({
         } else if (req.body.type === 'about') {
           uploadDest = './public/about-images';
         } else {
-          uploadDest = './public/uploads';
+          uploadDest = './public/product-images';
         }
 
         // const uploadDest = req.body.type === 'banner' ?  './public/banner-images' : './public/product-images'

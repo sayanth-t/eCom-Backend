@@ -17,6 +17,7 @@ const Contact = require('../models/contact') ;
 
 const crypto = require('crypto');
 
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
@@ -34,8 +35,8 @@ const nodemailer = require('nodemailer');
 // razorpay
 const Razorpay = require('razorpay');
 const razorpay = new Razorpay({
-  key_id: process.env.KEY_ID,
-  key_secret: process.env.SECRET_KEY,
+  key_id : process.env.KEY_ID ,
+  key_secret : process.env.SECRET_KEY,
 });
 
 const {
@@ -49,9 +50,8 @@ const { default: mongoose } = require('mongoose');
 
 const getHome = async (req, res) => {
   try {
-    const limit = req.query.limit * 1 || 3;
 
-    console.log('lilmit value : ', limit );
+    const limit = req.query.limit * 1 || 3 ;
 
     const products = await Products.find({}).populate('category').limit(limit);
 
@@ -66,6 +66,7 @@ const getHome = async (req, res) => {
       });
     }
     const banners = await Banner.find();
+
     res.render('user/home', {
       products,
       cartProductCount,
@@ -75,7 +76,7 @@ const getHome = async (req, res) => {
       banners,
     });
   } catch (err) {
-    console.log('error while getting home page', err.message);
+    console.log('error while getting home page', err.message );
   }
 };
 
@@ -84,14 +85,19 @@ const getProfile = async (req, res) => {
   try {
     const user = req.user;
 
+    console.log(user)
+
     const cartProductCount = await getCartCount(req.cookies);
     const isUserLoggedin = await isLogged(req.cookies);
     const wishlistProductCount = await getWishlistCount(req.cookies);
 
-    const wallet = await Wallet.findOne({ userId: user._id });
+    const wallet = await Wallet.findOne( { userId: user._id } );
 
-    // finding latest three transctions
-    const transactions = wallet.transactions;
+    let transactions = [] ;
+    if(wallet) {
+      // finding latest three transctions
+      transactions = wallet.transactions ;
+    }
 
     res.render('user/profilePage', {
       user,
@@ -101,7 +107,9 @@ const getProfile = async (req, res) => {
       transactions,
       wishlistProductCount,
     });
-  } catch (error) {}
+  } catch (err) {
+    console.log(err.message)
+  }
 };
 
 // get profile edit page
@@ -245,7 +253,7 @@ const forgottPassword = async (req, res) => {
 // for showing page for reset password
 const getResetPassword = async (req, res) => {
   try {
-    const { passwordReset } = req.params;
+    const { passwordReset } = req.params ;
     // converting plane token to hash
     const token = crypto
       .createHash('sha256')
@@ -901,7 +909,7 @@ const placeOrder = async (req, res) => {
     const { isValid, errors } = addressValidator(req.body);
 
     if (!isValid) {
-      throw new Error(errors);
+      throw new Error(errors) ;
     }
 
     const cart = await Cart.findOne({ user: user._id });
@@ -1130,7 +1138,7 @@ const searchProduct = async (req, res) => {
     console.log(category);
 
     let searchProducts;
-    if (!category || category === '*') {
+    if ( !category || category === '*') {
       // searching products in product collection
       searchProducts = await Products.find({
         name: {
@@ -1186,10 +1194,10 @@ const filterProduct = async (req, res) => {
 
     let sortingOrder;
     if (sort === 'asc') {
-      sortingOrder = 1;
+      sortingOrder = 1 ;
     }
     if (sort === 'desc') {
-      sortingOrder = -1;
+      sortingOrder = -1 ;
     }
 
     const pipeline = [];
@@ -1237,7 +1245,7 @@ const downloadInvoice = async (req, res) => {
   try {
     const { orderId } = req.params;
 
-    // Fetch order details and populate necessary fields
+    // order dertails
     const order = await Orders.findById(orderId)
       .populate('userId')
       .populate('address')
@@ -1353,7 +1361,7 @@ const returnRequest = async (req, res) => {
     returnLastDate.setDate(returnLastDate.getDate() + 15);
     const today = new Date();
 
-    if (today > returnLastDate) {
+    if ( today > returnLastDate ) {
       throw new Error('Return last Date is over!');
     }
     // console.log('return last date : ',returnLastDate) ;
@@ -1470,6 +1478,8 @@ const viewProduct = async (req, res) => {
       .sort({ 'ratings.postedAt': -1 })
       .limit(3)
       .populate('ratings.postedBy');
+
+    console.log('recent ratingss--',recentRatings)  ;  
 
     // providing related products
     const productCategory = product.category;
