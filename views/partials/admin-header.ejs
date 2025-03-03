@@ -1,0 +1,22 @@
+<header class="header">
+    <div class="logo"></div>
+    <nav class="nav-links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="/admin/products/view">Products</a>
+        <a href="/admin/category/view">Category</a>
+        <a href="#orders">Orders</a>
+        <a href="#profile">Profile</a>
+    </nav>
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+</header>
+
+<script>
+    function toggleMenu() {
+        const navLinks = document.querySelector('.nav-links');
+        navLinks.classList.toggle('active');
+    }
+</script>

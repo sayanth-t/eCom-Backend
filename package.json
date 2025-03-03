@@ -1,7 +1,7 @@
 {
   "name": "e-commerse",
   "version": "1.0.0",
-  "main": "app.js",
+  "main": "./",
   "scripts": {
     "start": "node src/app.js",
     "build" : "npm run build",

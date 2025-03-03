@@ -1,0 +1,256 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Forms | Bootstrap Simple Admin Template</title>
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet">
+
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Toastr CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- sidebar navigation component -->
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
+            </div>
+
+            <!-- side bar -->
+            <ul class="list-unstyled components text-secondary">
+
+                <!-- dashboard -->
+                <li>
+                    <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                <!-- products -->
+                <li>
+                    <a href="/admin/products/view"><i class="fas fa-file-alt"></i>Products</a>
+                </li>
+
+                <!-- users -->
+                <li>
+                    <a href="/admin/user/view"><i class="fas fa-user-friends"></i>Users</a>
+                </li>
+
+                <!-- orders -->
+                <li>
+                    <a href="/admin/order/view"><i class="fas fa-chart-bar"></i>Orders</a>
+                </li>
+
+                 <!-- return requestss -->
+                 <li>
+                    <a href="/admin/return-request/review"><i class="fas fa-undo-alt"></i>Return-requests</a>
+                </li>
+
+                <!-- coupons -->
+                <li>
+                    <a href="/admin/coupon/view"><i class="fas fa-table"></i>Coupons </a>
+                </li>
+
+                <!-- banners -->
+                <li>
+                    <a href="/admin/banner/view"><i class="fas fa-icons"></i>Banners</a>
+                </li>
+
+                <!-- about page -->
+                <li>
+                    <a href="/admin/about/view"><i class="fas fa-info-circle"></i>About Page</a>
+                </li>
+
+                <!-- contact page -->
+                <li>
+                    <a href="/admin/contact/view"><i class="fas fa-envelope"></i>Contact Page</a>
+                </li>
+        
+            </ul>
+
+        </nav>
+        <!-- end of sidebar component -->
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span><%= admin.name %></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                       
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/admin/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+            <div class="content">
+                <div class="container">
+                    
+                    <div class="row">
+
+                        <!-- form for add new product -->
+                
+                        <div class="col-lg-12 mt-5">
+                            <div class="card">
+                                <div class="card-header">update product details</div>
+                                <div class="card-body">
+                                    
+                                    <form id="addProductForm" action="/admin/product/edit/<%= product._id %>" method="post" enctype="multipart/form-data" accept-charset="utf-8 mt-5">
+
+                                        <!-- product name -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label" for="email">Name</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="name" value="<%= product.name %>" class="form-control">
+                                            </div>
+                                        </div>
+                                        <!-- price -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label" for="password">Price</label>
+                                            <div class="col-sm-10">
+                                                <input type="number" name="price" value="<%= product.price %>" class="form-control">
+                                                
+                                            </div>
+                                        </div>
+                                        <!-- category -->
+                                        <div class="mb-3 row">
+                                            <label class="col-sm-2 form-label" for="category">Category</label>
+                                            <div class="col-sm-10">
+                                                <select name="category" class="form-control">
+                                                    <option value="<%= product.category.name %>" >Select a category</option>
+                                                    <% categories.forEach(category => { %>
+                                                        <option value="<%= category.name %>"><%= category.name %></option>
+                                                    <% }) %>
+      
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <!-- stock count -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="password">Stock</label>
+                                                <div class="col-sm-10">
+                                                    <input type="number" name="quantity" value="<%= product.quantity %>" class="form-control">
+                                                    
+                                                </div>
+                                            </div>
+                                            <!-- size -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="category">Size</label>
+                                                <div class="col-sm-10">
+                                                    <select name="size" class="form-control">
+                                                        <option value="<%= product.size %>" >Select a size</option>
+                                                            <option value="xs">extra small</option>
+                                                            <option value="s"> small</option>
+                                                            <option value="m"> medium</option>
+                                                            <option value="l"> large</option>
+                                                            <option value="xl"> extra large</option>
+                                                    </select>
+                                                </div> 
+                                            </div>
+                                            <!-- colour -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="password">Colour</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="colour" value="<%= product.colour %>" class="form-control">
+                                                    
+                                                </div>
+                                            </div>
+                                            <!-- description -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="password">Description</label>
+                                                <div class="col-sm-10">
+                                                    <input type="text" name="description" value="<%= product.description %>" class="form-control">
+                                                </div>
+                                            </div>
+
+                                              <!-- upload image -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" for="image">Upload Image</label>
+                                                <div class="col-sm-10">
+                                                    <input type="file" name="image" id="imageUpload" class="form-control" accept="image/*" onchange="previewImage(event)">
+                                                </div>
+                                            </div>
+                                            <!-- image preview -->
+                                            <div class="mb-3 row">
+                                                <label class="col-sm-2 form-label" id="previewLabel" >preview</label>
+                                                <div class="col-sm-10">
+                                                        <img id="preview" src="/product-images/<%= product.image %>" alt="Preview" style="width: 100px; height: auto ; ">
+ 
+                                                </div>
+                                            </div>
+
+                                        <div class="mb-3 row">
+                                            <div class="col-sm-10 offset-sm-2 mt-3">
+                                                <input type="submit" class="btn btn-primary">
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
+    <script>
+
+
+        //  to show image uploaded image preview
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+
+                const output = document.getElementById('preview');
+                output.src = reader.result;
+                
+                
+                
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+
+    <script src="/assets/vendor/jquery/jquery.min.js"></script>
+    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/form-validator.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+
+</html>

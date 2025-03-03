@@ -1,0 +1,230 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tables | Bootstrap Simple Admin Template</title>
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet">
+
+    <!-- Include Toastr CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- sidebar navigation component -->
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="assets/img/bootstraper-logo.png" alt="bootraper logo" class="app-logo">
+            </div>
+
+            <!-- side bar -->
+            <ul class="list-unstyled components text-secondary">
+
+                <!-- dashboard -->
+                <li>
+                    <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                <!-- products -->
+                <li>
+                    <a href="/admin/products/view"><i class="fas fa-file-alt"></i>Products</a>
+                </li>
+
+                <!-- users -->
+                <li>
+                    <a href="/admin/user/view"><i class="fas fa-user-friends"></i>Users</a>
+                </li>
+
+                <!-- orders -->
+                <li>
+                    <a href="/admin/order/view"><i class="fas fa-chart-bar"></i>Orders</a>
+                </li>
+
+                 <!-- return requestss -->
+                 <li>
+                    <a href="/admin/return-request/review"><i class="fas fa-undo-alt"></i>Return-requests</a>
+                </li>
+
+                <!-- coupons -->
+                <li>
+                    <a href="/admin/coupon/view"><i class="fas fa-table"></i>Coupons </a>
+                </li>
+
+                <!-- banners -->
+                <li>
+                    <a href="/admin/banner/view"><i class="fas fa-icons"></i>Banners</a>
+                </li>
+
+                <!-- about page -->
+                <li>
+                    <a href="/admin/about/view"><i class="fas fa-info-circle"></i>About Page</a>
+                </li>
+
+                <!-- contact page -->
+                <li>
+                    <a href="/admin/contact/view"><i class="fas fa-envelope"></i>Contact Page</a>
+                </li>
+        
+            </ul>
+
+        </nav>
+        <!-- end of sidebar component -->
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span><%= admin.name %></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                       
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/admin/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+
+                        <!-- products table -->
+                        <div class="col-md-12 col-lg-12 mt-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span>Abouts</span>
+                                    <!-- Add Product Button -->
+                                    <a href="/admin/about/create" class="btn btn-success btn-sm" role="button">
+                                        <i class="fas fa-plus"></i> Add about
+                                    </a>
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-title"></p>
+                                    <table class="table table-hover" id="dataTables-example" width="100%">
+                                        <thead>
+                                            <tr>
+
+                                                <th>IMAGE</th>
+                                                <th>TITLE</th>
+                                                <th>DESCRIPTION</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% abouts.forEach(about => { %>
+                                             <tr>
+                                                <td><img src="/about-images/<%= about.image %>" alt="" style="width: 100px; height: auto;"></td>
+                                                <td><%= about.title %></td>
+                                                <td>
+                                                   
+                                                    <div class="text-truncate-multiline" style="max-height: 4.5em; max-width: 400px; overflow: hidden; line-height: 1.5em;">
+                                                      <%= about.description %>
+                                                    </div>
+                                                    
+                                                   
+                                                    <% if (about.description.length > 100) { %>
+                                                      <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#descriptionModal<%= about._id %>">
+                                                        View More
+                                                      </button>
+                                                    <% } %>
+                                                  
+                                                    
+                                                    <div class="modal fade" id="descriptionModal<%= about._id %>" tabindex="-1" aria-labelledby="descriptionModalLabel<%= about._id %>" aria-hidden="true">
+                                                      <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                          <div class="modal-header">
+                                                            <h5 class="modal-title" id="descriptionModalLabel<%= about._id %>">Full Description</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                          </div>
+                                                          <div class="modal-body">
+                                                            <%= about.description %>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </td>
+                                                  
+                                                    <td>
+                                                        <a href="/admin/about/edit/<%= about._id %>" class="btn btn-outline-info btn-rounded" ><i class="fas fa-pen"></i></a>
+                                                        <a href="" class="btn delete-btn btn-outline-danger btn-rounded" onclick="deleteAbout('<%= about._id %>', this)"><i class="fas fa-trash"></i></a>
+                                                    </td>
+                                               
+                                             </tr>
+                                            <% }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+    <!-- Include Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+       
+       function deleteAbout(aboutId, button) {
+
+            const row = $(button).closest('tr'); // Get the row element
+    
+            $.ajax({
+                url: `/admin/about/delete/${aboutId}`,
+                method: 'DELETE',
+                success: (response) => {
+                    console.log(response);
+                    if (response.aboutDelete) {
+                        toastr.success("About deleted successfully");
+                        row.remove(); 
+                    }
+                }
+            });
+        }
+
+    </script>
+   
+    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/vendor/datatables/datatables.min.js"></script>
+    <script src="/assets/js/initiate-datatables.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+
+</html>

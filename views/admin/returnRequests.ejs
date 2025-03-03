@@ -1,0 +1,239 @@
+<!doctype html>
+<!-- 
+* Bootstrap Simple Admin Template
+* Version: 2.1
+* Author: Alexis Luna
+* Website: https://github.com/alexis-luna/bootstrap-simple-admin-template
+-->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Tables | Bootstrap Simple Admin Template</title>
+    <link href="/assets/vendor/fontawesome/css/fontawesome.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/solid.min.css" rel="stylesheet">
+    <link href="/assets/vendor/fontawesome/css/brands.min.css" rel="stylesheet">
+    <link href="/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/vendor/datatables/datatables.min.css" rel="stylesheet">
+    <link href="/assets/css/master.css" rel="stylesheet">
+
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <!-- Include Toastr CSS -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css" rel="stylesheet">
+
+
+</head>
+
+<body>
+    <div class="wrapper">
+        <!-- sidebar navigation component -->
+        <nav id="sidebar" class="active">
+            <div class="sidebar-header">
+                <img src="" alt="bootraper logo" class="app-logo">
+            </div>
+
+            <!-- side bar -->
+            <ul class="list-unstyled components text-secondary">
+
+                <!-- dashboard -->
+                <li>
+                    <a href="/admin"><i class="fas fa-home"></i> Dashboard</a>
+                </li>
+
+                <!-- products -->
+                <li>
+                    <a href="/admin/products/view"><i class="fas fa-file-alt"></i>Products</a>
+                </li>
+
+                <!-- users -->
+                <li>
+                    <a href="/admin/user/view"><i class="fas fa-user-friends"></i>Users</a>
+                </li>
+
+                <!-- orders -->
+                <li>
+                    <a href="/admin/order/view"><i class="fas fa-chart-bar"></i>Orders</a>
+                </li>
+
+                <!-- coupons -->
+                <li>
+                    <a href="/admin/coupon/view"><i class="fas fa-table"></i>Coupons </a>
+                </li>
+
+                <!-- banners -->
+                <li>
+                    <a href="/admin/banner/view"><i class="fas fa-icons"></i>Banners</a>
+                </li>
+
+                <!-- about page -->
+                <li>
+                    <a href="/admin/about/view"><i class="fas fa-info-circle"></i>About Page</a>
+                </li>
+
+                <!-- contact page -->
+                <li>
+                    <a href="/admin/contact/view"><i class="fas fa-envelope"></i>Contact Page</a>
+                </li>
+        
+            </ul>
+
+        </nav>
+        <!-- end of sidebar component -->
+        <div id="body" class="active">
+            <!-- navbar navigation component -->
+            <nav class="navbar navbar-expand-lg navbar-white bg-white">
+                <button type="button" id="sidebarCollapse" class="btn btn-light">
+                    <i class="fas fa-bars"></i><span></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav ms-auto">
+                        <li class="nav-item dropdown">
+                            
+                        </li>
+                        <li class="nav-item dropdown">
+                            <div class="nav-dropdown">
+                                <a href="#" id="nav2" class="nav-item nav-link dropdown-toggle text-secondary" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-user"></i> <span><%= admin.name %></span> <i style="font-size: .8em;" class="fas fa-caret-down"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end nav-link-menu">
+                                    <ul class="nav-list">
+                                        <li><a href="" class="dropdown-item"><i class="fas fa-address-card"></i> Profile</a></li>
+                                       
+                                        <div class="dropdown-divider"></div>
+                                        <li><a href="/admin/logout" class="dropdown-item"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- end of navbar navigation -->
+
+            <div class="content">
+                <div class="container">
+                    <div class="row">
+
+                        <!-- products table -->
+                        <div class="col-md-12 col-lg-12 mt-4">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <span>Orders</span>
+                                  
+                                </div>
+                                <div class="card-body">
+                                    <p class="card-title"></p>
+                                    <table class="table table-hover" id="dataTables-example" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>ORDER ID</th>
+                                                <th>PRODUCT</th>
+                                                <th>REASON</th>
+                                                <th>AMOUNT</th>
+                                                <th>REQUESTED DATE</th>
+                                                <th>STATUS</th>
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            <%  returnRequests.forEach(request => { %>
+                                                <tr id="order-row-<%=  %>">
+                                                    <td><%= request.orderId %></td>
+                                                    <td><%= request.productId.name %></td>
+                                                    <td><%= request.reason %></td>
+                                                    <td><%= request.productId.total %></td>
+                                                    <td><%= (request.requested).toDateString() %></td>    
+                                                   
+                                                    <td>
+                                                        <select class="form-select form-select-sm status-dropdown" 
+                                                                data-request-id="<%= request._id %>" 
+                                                                data-product-id="<%= request.productId._id %>"
+                                                                onchange="updateStatus(this)">
+                                                                
+                                                            <option value="pending" <%= request.status === 'pending' ? 'selected' : '' %>>Pending</option>
+                                                            <option value="approved" <%= request.status === 'approved' ? 'selected' : '' %>>Approve</option>
+                                                            <option value="rejected" <%= request.status === 'rejected' ? 'selected' : '' %>>Reject</option>
+                                                        
+                                                        </select>
+                                                    </td>
+
+                                            </tr>
+                                            <% }) %>
+                                               
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+               
+
+            </div>
+            
+        </div>
+    </div>
+
+   
+
+    <!-- Include Toastr JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
+    <script>
+        toastr.options = {
+            closeButton: true,
+            progressBar: true,
+            timeOut: 3000,
+            extendedTimeOut: 1000,
+            positionClass: "toast-top-right",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut"
+        };
+    
+        function updateStatus (selectElement) {
+            const requestId = selectElement.getAttribute('data-request-id');
+            const productId = selectElement.getAttribute('data-product-id');
+            const status = selectElement.value;
+
+            $.ajax({
+                url : `/admin/return-request/review` ,
+                method : 'patch',
+                data : {
+                    status ,
+                    requestId ,
+                    productId
+                } ,
+                success : (response) => {
+                    if(response.statusChanged){
+                        toastr.success(`request status changed to ${status}`);
+                    }
+                    else{
+                        toastr.error(`something went wrong!`);
+                    }
+                }
+            })
+        }
+
+        function viewProducts(products){
+            console.log('view products button clickeddd')
+            console.log(products) ;
+        }
+    </script>
+    
+   
+    <script src="/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/vendor/datatables/datatables.min.js"></script>
+    <script src="/assets/js/returnRequestTable.js"></script>
+    <script src="/assets/js/script.js"></script>
+</body>
+
+</html>
+
